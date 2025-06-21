@@ -1,0 +1,134 @@
+:root {
+  --gip-bg: #232323;
+  --gip-gold: #E4B165;
+  --gip-gold-light: #EFCB89;
+  --gip-text: #fff;
+  --gip-text-secondary: #eaeaea;
+}
+
+body {
+  background: var(--gip-bg) !important;
+  color: var(--gip-text);
+}
+
+a, .text-gold {
+  color: var(--gip-gold);
+}
+a:hover, .hover\:text-gold:hover {
+  color: var(--gip-gold-light);
+}
+
+.bg-gold {
+  background-color: var(--gip-gold) !important;
+}
+.bg-gold-gradient {
+  background: linear-gradient(90deg, #E4B165 0%, #EFCB89 100%) !important;
+}
+
+.button-gold {
+  background: var(--gip-gold);
+  color: #232323;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.button-gold:hover {
+  background: var(--gip-gold-light);
+  color: #232323;
+}
+
+.navbar, .footer {
+  background: var(--gip-bg) !important;
+  color: var(--gip-text);
+}
+
+.text-secondary {
+  color: var(--gip-text-secondary);
+}
+
+/* ---------- Property Card 3‑D Hover ---------- */
+.card-3d {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+}
+.card-3d:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+.card-3d:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* -------- Who dropdown & buttons -------- */
+.who-btn{
+  width:32px;
+  height:32px;
+  background:#F7E2BB;
+  border-radius:50%;
+  border:none;
+  font-size:1.25rem;
+  color:#B27D12;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transition:background .15s;
+}
+.who-btn:active{
+  background:#E1C27B;
+}
+
+/* Airbnb style for Who dropdown */
+#whoDropdown {
+  box-shadow: 0 8px 32px rgba(30,30,30,.13), 0 1.5px 8px rgba(0,0,0,.10);
+  border-radius: 1.5rem;
+  border: 1px solid #e5e5e5;
+  min-width: 400px;
+}
+.who-btn-airbnb {
+  width: 44px;
+  height: 44px;
+  background: #fff;
+  border-radius: 9999px;
+  border: 2px solid #E4B165;
+  color: #E4B165;
+  font-size: 2rem;
+  font-weight: bold;
+  transition: background .15s, border .15s, color .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1.5px 8px rgba(0,0,0,.06);
+  outline: none;
+}
+.who-btn-airbnb:active, .who-btn-airbnb:focus {
+  background: #FFF7E1;
+  border-color: #EFCB89;
+  color: #E4B165;
+}
+
+/* Calendar dropdown styling */
+#calendarDropdown{
+  box-shadow:0 8px 32px rgba(30,30,30,.13),0 1.5px 8px rgba(0,0,0,.10);
+  border-radius:1.5rem;
+}
+#calendarGrid button{
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9999px;
+  font-weight:600;
+  font-size:0.95rem;
+  color:#232323;           /* visible by default on white bg */
+  transition:background .15s,color .15s;
+}
+#calendarGrid button:hover{
+  background:#F7E2BB;
+}
+#calendarGrid button.selected{
+  background:#232323 !important;
+  color:#fff !important;
+}

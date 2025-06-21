@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10 p-6 md:p-12 bg-white rounded-2xl shadow-2xl flex flex-col gap-8">
+
+  <!-- Photo Gallery -->
+  <div class="w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for photo in property.photos.all %}
+        <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:property.name }}" class="rounded-xl w-full h-64 object-cover shadow" loading="lazy">
+      {% empty %}
+        <div class="flex items-center justify-center w-full h-64 text-gray-300 bg-gray-100 rounded-xl">
+          <span>No photos available.</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Property Main Info -->
+  <div class="flex flex-col md:flex-row gap-8 items-start">
+    <div class="flex-1 flex flex-col gap-2">
+      <h1 class="text-4xl font-extrabold text-gold mb-2">{{ property.name }}</h1>
+      <div class="flex items-center gap-2 mb-1 text-gray-600">
+        <svg class="w-5 h-5 text-gold" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+        <span>{{ property.location }}</span>
+        {% if property.latitude and property.longitude %}
+        <span class="ml-2 text-xs px-2 py-1 rounded bg-[#F8ECD8] text-gold">
+          {{ property.latitude|floatformat:4 }}, {{ property.longitude|floatformat:4 }}
+        </span>
+        {% endif %}
+      </div>
+      <div class="text-lg text-gray-800 mb-4">{{ property.description }}</div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Type</span>
+          <span class="text-gray-700">{{ property.get_property_type_display }}</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Guests</span>
+          <span class="text-gray-700">{{ property.guests }}</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Bedrooms</span>
+          <span class="text-gray-700">{{ property.bedrooms }}</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Bathrooms</span>
+          <span class="text-gray-700">{{ property.bathrooms }}</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Area</span>
+          <span class="text-gray-700">{{ property.area }} m²</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="font-bold text-[#232323]">Price</span>
+          <span class="text-gray-700">
+            {% if property.property_type == 'short-term' %}
+              €{{ property.price_per_night|floatformat:0 }}/night
+            {% elif property.property_type == 'long-term' %}
+              €{{ property.price_per_night|floatformat:0 }}/month
+            {% elif property.property_type == 'investment' %}
+              €{{ property.price_per_night|floatformat:0 }}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+
+      {% if property.facilities.exists %}
+        <div class="mb-4">
+          <h2 class="text-lg font-semibold text-gold mb-2">Facilities & Features</h2>
+          <ul class="flex flex-wrap gap-3">
+            {% for facility in property.facilities.all %}
+              <li class="px-3 py-1 bg-[#FFF6E8] text-[#232323] rounded-full border border-gold text-sm">{{ facility.name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <!-- Reserve Button -->
+      <a href="#reserve" class="bg-gold text-[#232323] font-bold px-6 py-3 rounded-xl shadow hover:scale-105 transition w-fit mt-2">Reserve This Property</a>
+    </div>
+
+    <!-- Map (Placeholder or Real Map) -->
+    <div class="w-full md:w-80 mt-8 md:mt-0">
+      {% if property.latitude and property.longitude %}
+        <div class="rounded-xl overflow-hidden shadow border border-gold">
+          <iframe
+            width="100%"
+            height="250"
+            frameborder="0"
+            style="border:0"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://maps.google.com/maps?q={{ property.latitude }},{{ property.longitude }}&z=16&output=embed"
+            allowfullscreen>
+          </iframe>
+        </div>
+      {% else %}
+        <div class="flex items-center justify-center w-full h-48 text-gray-300 bg-gray-100 rounded-xl border border-gold">
+          <span>Location not specified</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

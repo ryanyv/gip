@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Group Ideal Primer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Your custom CSS (brand palette) -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <!-- Favicon (optional, add your own logo if needed) -->
+  <link rel="icon" href="{% static 'images/logo.jpeg' %}">
+</head>
+<body class="min-h-screen flex flex-col bg-[#232323] text-white">
+  <!-- Navbar -->
+  {% include "includes/navbar.html" %}
+
+  <!-- Main content -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  {% include "includes/footer.html" %}
+
+  <!-- JavaScript -->
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

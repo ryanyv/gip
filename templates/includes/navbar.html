@@ -1,0 +1,81 @@
+<nav class="navbar bg-[#232323] shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-20 items-center">
+      <!-- Logo/Brand -->
+      <div class="flex-shrink-0 flex items-center space-x-4">
+        <a href="/" class="flex items-center space-x-3">
+          <img src="/static/images/logo.jpeg" alt="Group Ideal Primer" class="h-12 w-12 rounded bg-gold-gradient p-1 shadow" />
+          <span class="inline-block text-3xl font-extrabold tracking-wide text-gold">Group Ideal Primer</span>
+        </a>
+      </div>
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex space-x-10 items-center">
+        <a href="/" class="text-white font-semibold hover:text-gold transition">Home</a>
+        <div class="relative group">
+          <button class="text-white font-semibold hover:text-gold transition flex items-center focus:outline-none">
+            Properties
+            <svg class="ml-1 w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="absolute left-0 top-full w-48 bg-[#232323] border border-gold rounded-lg shadow-lg
+                 hidden group-hover:block transition duration-200 z-10">
+            <a href="/properties/?type=short-term" class="block px-5 py-3 text-white hover:bg-gold hover:text-black">Short-Term Rentals</a>
+            <a href="/properties/?type=long-term" class="block px-5 py-3 text-white hover:bg-gold hover:text-black">Long-Term Rentals</a>
+            <a href="/properties/?type=investment" class="block px-5 py-3 text-white hover:bg-gold hover:text-black">Investment Projects</a>
+          </div>
+        </div>
+        <a href="/about/" class="text-white font-semibold hover:text-gold transition">About Us</a>
+        <a href="/contact/" class="text-white font-semibold hover:text-gold transition">Contact</a>
+      </div>
+      <!-- Profile/Login Button -->
+      <div class="hidden md:flex items-center space-x-6">
+        {% if user.is_authenticated %}
+          <a href="/profile/" class="flex items-center space-x-3 group">
+            <span class="inline-block w-9 h-9 bg-gold rounded-full flex items-center justify-center shadow">
+              <svg class="w-6 h-6 text-[#232323]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z"></path></svg>
+            </span>
+            <span class="text-white group-hover:text-gold font-semibold text-lg">{{ user.username }}</span>
+          </a>
+          <a href="/logout/" class="text-gold hover:text-[#EFCB89] font-semibold transition">Logout</a>
+        {% else %}
+          <a href="/login/" class="button-gold px-5 py-2 rounded-lg font-semibold shadow-lg">Login</a>
+        {% endif %}
+      </div>
+      <!-- Mobile menu button -->
+      <div class="flex items-center md:hidden">
+        <button id="mobile-menu-button" class="inline-flex items-center justify-center p-3 rounded-md text-white hover:text-gold hover:bg-gold/20 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gold">
+          <svg class="block h-7 w-7" id="mobile-menu-icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg class="hidden h-7 w-7" id="mobile-menu-icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden hidden bg-[#232323] border-t border-gold shadow-lg">
+    <div class="px-4 pt-5 pb-6 space-y-4">
+      <a href="/" class="block text-white font-semibold hover:text-gold transition text-lg">Home</a>
+      <div class="group relative">
+        <button class="w-full flex justify-between items-center text-white font-semibold hover:text-gold py-3 text-lg">
+          Properties
+          <svg class="ml-1 w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="ml-6">
+          <a href="/properties/?type=short-term" class="{% if request.GET.type == 'short-term' %}block px-3 py-2 bg-gold text-black rounded-lg text-base font-medium{% else %}block px-3 py-2 text-white hover:bg-gold hover:text-black rounded-lg text-base font-medium{% endif %}">Short-Term Rentals</a>
+          <a href="/properties/?type=long-term" class="{% if request.GET.type == 'long-term' %}block px-3 py-2 bg-gold text-black rounded-lg text-base font-medium{% else %}block px-3 py-2 text-white hover:bg-gold hover:text-black rounded-lg text-base font-medium{% endif %}">Long-Term Rentals</a>
+          <a href="/properties/?type=investment" class="{% if request.GET.type == 'investment' %}block px-3 py-2 bg-gold text-black rounded-lg text-base font-medium{% else %}block px-3 py-2 text-white hover:bg-gold hover:text-black rounded-lg text-base font-medium{% endif %}">Investment Projects</a>
+        </div>
+      </div>
+      <a href="/about/" class="block text-white font-semibold hover:text-gold transition text-lg">About Us</a>
+      <a href="/contact/" class="block text-white font-semibold hover:text-gold transition text-lg">Contact</a>
+      {% if user.is_authenticated %}
+        <a href="/profile/" class="block text-white font-semibold hover:text-gold transition text-lg">Profile ({{ user.username }})</a>
+        <a href="/logout/" class="block text-gold font-semibold hover:text-[#EFCB89] transition text-lg">Logout</a>
+      {% else %}
+        <a href="/login/" class="block button-gold text-center px-6 py-2 rounded-lg font-semibold shadow-lg text-lg">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

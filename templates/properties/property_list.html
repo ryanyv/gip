@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="flex flex-col gap-8">
+
+  <div class="flex justify-center mb-10">
+    <form method="get"
+          class="flex items-center w-full max-w-7xl rounded-full bg-white border border-gray-200 shadow-lg px-4 py-3
+                 md:px-8 md:py-4 relative">
+      <!-- Where -->
+      <div class="flex-1 flex flex-col justify-center">
+        <span class="text-base font-bold text-[#232323]">Where</span>
+        <input type="text"
+               name="q"
+               value="{{ request.GET.q|default_if_none:'' }}"
+               placeholder="Search destinations"
+               class="w-full text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400" />
+      </div>
+      <!-- Divider -->
+      <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
+
+      <!-- Check in -->
+      <div class="flex-1 flex flex-col justify-center">
+        <span class="text-base font-bold text-[#232323]">Check in</span>
+        <input type="text"
+               name="checkin"
+               placeholder="Add dates"
+               readonly
+               onclick="toggleCalendar()"
+               class="w-full text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
+      </div>
+      <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
+
+      <!-- Check out -->
+      <div class="flex-1 flex flex-col justify-center">
+        <span class="text-base font-bold text-[#232323]">Check out</span>
+        <input type="text"
+               name="checkout"
+               placeholder="Add dates"
+               readonly
+               onclick="toggleCalendar()"
+               class="w-full text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
+      </div>
+
+      <!-- Calendar dropdown -->
+      <div id="calendarDropdown"
+           class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[900px] rounded-3xl shadow-2xl bg-white z-50 p-10 hidden border border-gray-100"
+           data-start=""
+           data-end="">
+        <div id="calendarHeader" class="flex items-center justify-between mb-4">
+          <button type="button" id="calPrev" class="who-btn-airbnb">&lt;</button>
+          <div id="calMonthLabel" class="font-bold text-lg text-[#222]"></div>
+          <button type="button" id="calNext" class="who-btn-airbnb">&gt;</button>
+        </div>
+        <div id="calendarGrid" class="flex gap-8 text-center text-sm">
+          <!-- JS will populate -->
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" id="calClear" class="button-gold bg-gray-100 text-[#232323]">Clear</button>
+          <button type="button" id="calApply" class="button-gold">Apply</button>
+        </div>
+      </div>
+
+      <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
+
+      <!-- Who -->
+      <div class="relative flex-1 flex flex-col justify-center items-center">
+        <span class="text-base font-bold text-[#232323]">Who</span>
+        <input
+          id="whoInput"
+          type="text"
+          name="guests"
+          readonly
+          value="Add guests"
+          placeholder="Add guests"
+          class="w-full text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer"
+          onclick="toggleWhoDropdown()"
+        />
+
+        <!-- Dropdown -->
+        <div id="whoDropdown"
+             class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] rounded-3xl shadow-2xl bg-white z-50 p-6 hidden border border-gray-100">
+          <!-- Adults -->
+          <div class="flex justify-between items-center py-4">
+            <div>
+              <div class="font-bold text-lg text-[#222]">Adults</div>
+              <div class="text-gray-500 text-base mt-1">Ages 13 or above</div>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('adults', -1)">-</button>
+              <span id="who-adults" class="text-xl w-8 text-center font-bold text-[#222]">0</span>
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('adults', 1)">+</button>
+            </div>
+          </div>
+          <hr class="my-1 border-gray-200" />
+
+          <!-- Children -->
+          <div class="flex justify-between items-center py-4">
+            <div>
+              <div class="font-bold text-lg text-[#222]">Children</div>
+              <div class="text-gray-500 text-base mt-1">Ages 2–12</div>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('children', -1)">-</button>
+              <span id="who-children" class="text-xl w-8 text-center font-bold text-[#222]">0</span>
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('children', 1)">+</button>
+            </div>
+          </div>
+          <hr class="my-1 border-gray-200" />
+
+          <!-- Infants -->
+          <div class="flex justify-between items-center py-4">
+            <div>
+              <div class="font-bold text-lg text-[#222]">Infants</div>
+              <div class="text-gray-500 text-base mt-1">Under 2</div>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('infants', -1)">-</button>
+              <span id="who-infants" class="text-xl w-8 text-center font-bold text-[#222]">0</span>
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('infants', 1)">+</button>
+            </div>
+          </div>
+          <hr class="my-1 border-gray-200" />
+
+          <!-- Pets -->
+          <div class="flex justify-between items-center py-4">
+            <div>
+              <div class="font-bold text-lg text-[#222]">Pets</div>
+              <a href="#" class="text-gray-600 underline text-base mt-1">Bringing a service animal?</a>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('pets', -1)">-</button>
+              <span id="who-pets" class="text-xl w-8 text-center font-bold text-[#222]">0</span>
+              <button type="button" class="who-btn-airbnb" onclick="updateWho('pets', 1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search button -->
+      <button type="submit"
+              class="ml-3 md:ml-6 flex items-center justify-center w-14 h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30 absolute right-4 md:static md:relative">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Tabs for Property Types -->
+  <div class="flex flex-wrap gap-3 mb-6 justify-center">
+    <a href="{% url 'properties:property_list' %}?type=short-term" class="px-5 py-2 rounded-full font-semibold transition
+        {% if filter_type == 'short-term' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
+      Short-Term Rentals
+    </a>
+    <a href="{% url 'properties:property_list' %}?type=long-term" class="px-5 py-2 rounded-full font-semibold transition
+        {% if filter_type == 'long-term' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
+      Long-Term Rentals
+    </a>
+    <a href="{% url 'properties:property_list' %}?type=investment" class="px-5 py-2 rounded-full font-semibold transition
+        {% if filter_type == 'investment' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
+      Investment Projects
+    </a>
+  </div>
+
+  <!-- Grid of Property Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    {% for property in properties %}
+      <div
+        class="property-card card-3d bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gold cursor-pointer"
+        data-name="{{ property.name }}"
+        data-location="{{ property.location }}"
+        data-price="{% if property.property_type == 'short-term' %}€{{ property.price_per_night|floatformat:0 }}/night{% elif property.property_type == 'long-term' %}€{{ property.price_per_night|floatformat:0 }}/month{% else %}€{{ property.price_per_night|floatformat:0 }}{% endif %}"
+        data-img="{% if property.photos.all %}{{ property.photos.first.image.url }}{% endif %}"
+        data-url="{% url 'properties:property_detail' property.pk %}"
+      >
+        {% if property.photos.all %}
+          <img src="{{ property.photos.first.image.url }}" alt="{{ property.name }}" class="w-full h-48 object-cover">
+        {% else %}
+          <div class="w-full h-48 flex items-center justify-center bg-[#EEE8DC] text-gold font-bold text-3xl">
+            No Photo
+          </div>
+        {% endif %}
+        <div class="p-5 flex-1 flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xl font-bold text-gold">{{ property.name }}</h3>
+            <span class="text-xs rounded-full px-3 py-1 font-semibold
+                {% if property.property_type == 'short-term' %}bg-[#F7E2BB] text-[#B27D12]{% elif property.property_type == 'long-term' %}bg-[#E7F7BB] text-[#4C8619]{% else %}bg-[#D8E2FF] text-[#2B4172]{% endif %}">
+              {{ property.get_property_type_display }}
+            </span>
+          </div>
+          <div class="text-[#232323] font-medium mb-1 truncate">{{ property.location }}</div>
+          <div class="flex items-center text-gray-600 text-xs gap-3 mb-3">
+            <span>{{ property.bedrooms }} bd</span>
+            <span>{{ property.bathrooms }} ba</span>
+            <span>{{ property.area }} m²</span>
+          </div>
+          <div class="text-lg font-extrabold mb-2 text-[#232323]">
+            {% if property.property_type == 'short-term' %}
+              €{{ property.price_per_night|floatformat:0 }}/night
+            {% elif property.property_type == 'long-term' %}
+              €{{ property.price_per_night|floatformat:0 }}/month
+            {% elif property.property_type == 'investment' %}
+              €{{ property.price_per_night|floatformat:0 }}
+            {% endif %}
+          </div>
+          <div class="text-gray-700 text-sm mb-4 line-clamp-2">{{ property.description }}</div>
+          <div class="flex gap-3 mt-auto">
+            <a href="{% url 'properties:property_detail' property.pk %}" class="button-gold w-full text-center flex items-center justify-center font-bold text-lg py-3 transition rounded-lg shadow hover:scale-105">More Info</a>
+            <a href="{% url 'properties:property_detail' property.pk %}#reserve" class="button-gold w-full text-center flex items-center justify-center font-bold text-lg py-3 transition rounded-lg shadow hover:scale-105">Reserve</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-span-full text-center text-gray-400 text-lg py-20">
+        No properties found for this category.
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Quick‑view Modal -->
+<div id="propertyModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full relative p-6 text-[#232323]">
+    <button id="modalClose" class="absolute top-3 right-3 text-3xl leading-none font-bold hover:text-gold">&times;</button>
+    <img id="modalImg" src="" alt="" class="w-full h-56 object-cover rounded-lg mb-4" />
+    <h2 id="modalTitle" class="text-2xl font-extrabold mb-1"></h2>
+    <p id="modalLocation" class="text-sm text-gray-600 mb-4"></p>
+    <p id="modalPrice" class="text-xl font-bold mb-6"></p>
+    <div class="text-center">
+      <a id="modalLink" href="#" class="button-gold inline-block">View Full Details</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
