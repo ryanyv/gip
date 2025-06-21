@@ -136,7 +136,7 @@ function createMonthGrid(dateObj){
   // days
   for(let d=1; d<=daysInMon; d++){
     const iso = new Date(y,m,d).toISOString().split('T')[0];
-    html += `<button data-date="${iso}">${d}</button>`;
+    html += `<button type="button" data-date="${iso}">${d}</button>`;
   }
   html += '</div></div>';
   return html;
@@ -153,7 +153,8 @@ function renderCalendar(){
 
   // wire up day clicks
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
+    btn.addEventListener('click',(e)=>{
+      e.preventDefault();
       const iso = btn.dataset.date;
       if(!startDate || (startDate && endDate)){
         startDate = iso;
