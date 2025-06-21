@@ -128,7 +128,7 @@ function createMonthGrid(dateObj){
   const startWeekD = firstDay.getDay();                        // 0‑6
   const daysInMon  = new Date(y,m+1,0).getDate();             // 28‑31
 
-  let html = `<div class="flex flex-col gap-2"><div class="font-semibold text-[#232323] text-lg text-center">${monthNamesFull[m]} ${y}</div><div class="grid grid-cols-7 gap-2">`;
+  let html = `<div class="flex flex-col gap-2"><div class="font-semibold text-[#232323] text-lg text-center">${monthNamesFull[m]} ${y}</div><div class="grid grid-cols-7 gap-0">`;
   // weekday labels
   weekDays.forEach(d=>{ html += `<div class="font-medium text-gray-400">${d}</div>`; });
   // leading blanks
