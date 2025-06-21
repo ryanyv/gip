@@ -136,8 +136,7 @@ function createMonthGrid(dateObj){
   // days
   for(let d=1; d<=daysInMon; d++){
     const iso = new Date(y,m,d).toISOString().split('T')[0];
-    const active = (startDate && iso===startDate) || (endDate && iso===endDate);
-    html += `<button class="${active?'selected':''}" data-date="${iso}">${d}</button>`;
+    html += `<button data-date="${iso}">${d}</button>`;
   }
   html += '</div></div>';
   return html;
@@ -172,12 +171,28 @@ function renderCalendar(){
 }
 
 function highlightSelection(){
+  const start = startDate ? new Date(startDate) : null;
+  const end   = endDate ? new Date(endDate) : null;
+
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    btn.classList.remove('selected');
-    if(btn.dataset.date===startDate || btn.dataset.date===endDate){
-      btn.classList.add('selected');
+    const d = new Date(btn.dataset.date);
+    btn.classList.remove('range-start','range-end','in-range');
+
+    if(start && btn.dataset.date===startDate){
+      btn.classList.add('range-start');
+    }
+    if(end && btn.dataset.date===endDate){
+      btn.classList.add('range-end');
+    }
+    if(start && end && d > start && d < end){
+      btn.classList.add('in-range');
     }
   });
+
+  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
+  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  calDropdown.dataset.start = startDate || '';
+  calDropdown.dataset.end   = endDate || '';
 }
 
 window.toggleCalendar = function(){
@@ -191,18 +206,11 @@ window.toggleCalendar = function(){
 calPrev?.addEventListener('click',()=>{ currentMonth.setMonth(currentMonth.getMonth()-1); renderCalendar(); });
 calNext?.addEventListener('click',()=>{ currentMonth.setMonth(currentMonth.getMonth()+1); renderCalendar(); });
 calClear?.addEventListener('click',()=>{
-  startDate=null; endDate=null;
-  checkInInput.value='Add dates';
-  checkOutInput.value='Add dates';
-  calDropdown.dataset.start='';
-  calDropdown.dataset.end='';
+  startDate = null;
+  endDate   = null;
   highlightSelection();
 });
 calApply?.addEventListener('click',()=>{
-  if(startDate){ checkInInput.value = new Date(startDate).toLocaleDateString(); }
-  if(endDate){   checkOutInput.value = new Date(endDate).toLocaleDateString(); }
-  calDropdown.dataset.start=startDate||'';
-  calDropdown.dataset.end=endDate||'';
   calDropdown.classList.add('hidden');
 });
 

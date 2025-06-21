@@ -114,8 +114,8 @@ a:hover, .hover\:text-gold:hover {
   border-radius:1.5rem;
 }
 #calendarGrid button{
-  width:44px;
-  height:44px;
+  width:56px;
+  height:56px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -128,7 +128,12 @@ a:hover, .hover\:text-gold:hover {
 #calendarGrid button:hover{
   background:#F7E2BB;
 }
-#calendarGrid button.selected{
+#calendarGrid button.range-start,
+#calendarGrid button.range-end{
   background:#232323 !important;
   color:#fff !important;
+}
+#calendarGrid button.in-range{
+  background:#F7E2BB;
+  color:#232323;
 }
