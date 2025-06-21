@@ -130,10 +130,24 @@ a:hover, .hover\:text-gold:hover {
 }
 #calendarGrid button.range-start,
 #calendarGrid button.range-end{
+  position:relative;
   background:#232323 !important;
   color:#fff !important;
   border-radius:9999px;
 }
+#calendarGrid button.range-start::after,
+#calendarGrid button.range-end::after{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:50%;
+  background:#F7E2BB;
+  z-index:-1;
+}
+#calendarGrid button.range-start::after{ left:50%; }
+#calendarGrid button.range-end::after{ right:50%; }
+#calendarGrid button.no-after::after{ display:none; }
 #calendarGrid button.in-range{
   background:#F7E2BB;
   color:#232323;

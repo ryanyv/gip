@@ -177,13 +177,15 @@ function highlightSelection(){
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
     const d = new Date(btn.dataset.date);
-    btn.classList.remove('range-start','range-end','in-range');
+    btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
       btn.classList.add('range-start');
+      if(!end || start.getTime()===end.getTime()) btn.classList.add('no-after');
     }
     if(end && btn.dataset.date===endDate){
       btn.classList.add('range-end');
+      if(!start || start.getTime()===end.getTime()) btn.classList.add('no-after');
     }
     if(start && end && d > start && d < end){
       btn.classList.add('in-range');
