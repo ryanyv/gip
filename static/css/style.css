@@ -184,14 +184,14 @@ a:hover, .hover\:text-gold:hover {
   background:#232323 !important;
   color:#fff !important;
   border-radius:9999px;
-  padding:6px;            /* smaller black circle */
+  padding:4px;            /* even smaller black circle */
 }
 #detailCalendarGrid button.range-start::after,
 #detailCalendarGrid button.range-end::after{
   content:'';
   position:absolute;
-  top:6px;                /* match the padding for smooth line */
-  bottom:6px;
+  top:4px;                /* match the padding for smooth line */
+  bottom:4px;
   width:60%;              /* overlap neighbouring cells */
   background:#F7E2BB;
   z-index:-1;
