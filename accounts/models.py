@@ -17,6 +17,7 @@ class User(AbstractUser):
     profile_photo = models.ImageField(upload_to=user_avatar_path, blank=True, null=True)
     role = models.CharField(max_length=20, choices=USER_ROLES, default='staff')
     position = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return self.get_full_name() or self.username

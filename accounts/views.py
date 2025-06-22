@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib.auth import logout
-from django.contrib.auth.forms import UserCreationForm
+from .forms import RegisterForm
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -13,8 +13,8 @@ def logout_view(request):
 
 
 class RegisterView(CreateView):
-    """Simple user registration view using Django's built-in form."""
-    form_class = UserCreationForm
+    """User registration view using a custom form with email and phone."""
+    form_class = RegisterForm
     template_name = "accounts/register.html"
     success_url = reverse_lazy("login")
 
