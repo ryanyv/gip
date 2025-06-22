@@ -35,6 +35,7 @@
           <a href="/logout/" class="text-gold hover:text-[#EFCB89] font-semibold transition">Logout</a>
         {% else %}
           <a href="/login/" class="button-gold px-5 py-2 rounded-lg font-semibold shadow-lg">Login</a>
+          <a href="{% url 'register' %}" class="text-gold hover:text-[#EFCB89] font-semibold transition">Register</a>
         {% endif %}
       </div>
       <!-- Mobile menu button -->
@@ -72,6 +73,7 @@
         <a href="/logout/" class="block text-gold font-semibold hover:text-[#EFCB89] transition text-lg">Logout</a>
       {% else %}
         <a href="/login/" class="block button-gold text-center px-6 py-2 rounded-lg font-semibold shadow-lg text-lg">Login</a>
+        <a href="{% url 'register' %}" class="block text-gold font-semibold hover:text-[#EFCB89] transition text-lg">Register</a>
       {% endif %}
     </div>
   </div>
