@@ -55,11 +55,21 @@ class UserRegistrationForm(UserCreationForm):
         for name, field in self.fields.items():
             if name == "profile_photo":
                 field.widget.attrs["class"] = "hidden"
+                continue
+
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.setdefault(
+                    "class",
+                    "h-4 w-4 text-gold focus:ring-gold border-gray-300 rounded",
+                )
             else:
                 field.widget.attrs.setdefault("class", css_class)
-
-            if field.help_text:
-                auto_id = self.auto_id % self.add_prefix(name)
-                field.widget.attrs.setdefault("data-hover-help", f"{auto_id}_helptext")
-                field.widget.attrs.setdefault("data-help-text", str(field.help_text))
-                field.help_text = ""
+                if field.help_text:
+                    auto_id = self.auto_id % self.add_prefix(name)
+                    field.widget.attrs.setdefault(
+                        "data-hover-help", f"{auto_id}_helptext"
+                    )
+                    field.widget.attrs.setdefault(
+                        "data-help-text", str(field.help_text)
+                    )
+                    field.help_text = ""
