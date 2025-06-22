@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const iso = new Date(y,m,d).toISOString().split('T')[0];
       const dis = isBlocked(iso);
       html += `<button data-date="${iso}" ${dis?'disabled':''}
-               class="h-10 w-10 flex items-center justify-center rounded text-[#232323] text-sm
+               class="h-14 w-14 flex items-center justify-center rounded text-[#232323] text-base
                ${dis?'opacity-30 cursor-not-allowed':'hover:bg-[#F8ECD8]'}">
                ${d}</button>`;
     }

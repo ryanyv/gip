@@ -160,14 +160,14 @@ a:hover, .hover\:text-gold:hover {
 
 /* Detail page availability calendar */
 #detailCalendarGrid button{
-  width:40px;
-  height:40px;
+  width:56px;
+  height:56px;
   display:flex;
   align-items:center;
   justify-content:center;
   border-radius:0;
   font-weight:600;
-  font-size:0.85rem;
+  font-size:0.95rem;
   color:#232323;
   transition:background .15s,color .15s;
 }
@@ -181,20 +181,32 @@ a:hover, .hover\:text-gold:hover {
 #detailCalendarGrid button.range-start,
 #detailCalendarGrid button.range-end{
   position:relative;
-  background:#232323 !important;
   color:#fff !important;
   border-radius:9999px;
-  padding:2px;            /* smaller black circle */
+  background:transparent;
+}
+#detailCalendarGrid button.range-start::before,
+#detailCalendarGrid button.range-end::before{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:36px;
+  height:36px;
+  transform:translate(-50%,-50%);
+  border-radius:9999px;
+  background:#232323;
+  z-index:1;
 }
 #detailCalendarGrid button.range-start::after,
 #detailCalendarGrid button.range-end::after{
   content:'';
   position:absolute;
-  top:2px;                /* match the padding for smooth line */
-  bottom:2px;
-  width:60%;              /* overlap neighbouring cells */
+  top:10px;
+  bottom:10px;
+  width:60%;
   background:#F7E2BB;
-  z-index:-1;
+  z-index:0;
 }
 #detailCalendarGrid button.range-start::after{ left:50%; }
 #detailCalendarGrid button.range-end::after{ right:50%; }
