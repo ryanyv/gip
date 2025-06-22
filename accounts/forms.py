@@ -3,20 +3,47 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User
 
 class UserRegistrationForm(UserCreationForm):
+    no_commercial_emails = forms.BooleanField(
+        required=False,
+        label="I don't want to receive commercial emails",
+    )
+    agree_tos = forms.BooleanField(
+        required=True,
+        label="I agree with terms of service",
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = (
+            "profile_photo",
             "username",
             "first_name",
             "last_name",
             "email",
-            "profile_photo",
-            "role",
-            "position",
             "phone_number",
             "password1",
             "password2",
         )
+
+    field_order = [
+        "profile_photo",
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "password1",
+        "password2",
+        "no_commercial_emails",
+        "agree_tos",
+    ]
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.no_commercial_emails = self.cleaned_data.get("no_commercial_emails", False)
+        if commit:
+            user.save()
+        return user
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

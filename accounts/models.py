@@ -7,6 +7,7 @@ USER_ROLES = [
     ('superadmin', 'Super Admin'),
     ('admin', 'Admin'),
     ('staff', 'Staff'),
+    ('user', 'User'),
 ]
 
 def user_avatar_path(instance, filename):
@@ -16,9 +17,10 @@ def user_avatar_path(instance, filename):
 class User(AbstractUser):
     # Add extra fields for your custom user
     profile_photo = models.ImageField(upload_to=user_avatar_path, blank=True, null=True)
-    role = models.CharField(max_length=20, choices=USER_ROLES, default='staff')
+    role = models.CharField(max_length=20, choices=USER_ROLES, default='user')
     position = models.CharField(max_length=100, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
+    no_commercial_emails = models.BooleanField(default=False)
 
     @property
     def profile_photo_url(self):

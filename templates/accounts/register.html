@@ -4,19 +4,24 @@
 {% block content %}
 <div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
-    <div class="flex flex-col items-center mb-6">
-      <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
-      <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Register</h2>
+    <div class="flex flex-col items-center mb-6 space-y-2">
+      <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gold flex items-center justify-center">
+        {{ form.profile_photo }}
+      </div>
+      {% for error in form.profile_photo.errors %}<p class="text-red-600 text-sm">{{ error }}</p>{% endfor %}
+      <h2 class="text-center text-2xl font-extrabold text-gold">Register</h2>
     </div>
     <form method="post" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
       {% for field in form %}
+        {% if field.name != 'profile_photo' %}
         <div>
           <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gold">{{ field.label }}</label>
           {{ field }}
           {% if field.help_text %}<p class="text-xs text-gray-400">{{ field.help_text }}</p>{% endif %}
           {% for error in field.errors %}<p class="text-red-600 text-sm">{{ error }}</p>{% endfor %}
         </div>
+        {% endif %}
       {% endfor %}
       <div>
         <button type="submit" class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Register</button>
