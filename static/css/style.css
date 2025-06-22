@@ -114,12 +114,12 @@ a:hover, .hover\:text-gold:hover {
   border-radius:1.5rem;
 }
 #calendarGrid button{
-  width:44px;
-  height:44px;
+  width:56px;
+  height:56px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:9999px;
+  border-radius:0;
   font-weight:600;
   font-size:0.95rem;
   color:#232323;           /* visible by default on white bg */
@@ -127,8 +127,45 @@ a:hover, .hover\:text-gold:hover {
 }
 #calendarGrid button:hover{
   background:#F7E2BB;
+  border-radius:9999px;
 }
-#calendarGrid button.selected{
+#calendarGrid button.in-range:hover{
+  border-radius:0;
+}
+#calendarGrid button.range-start,
+#calendarGrid button.range-end{
+  position:relative;
   background:#232323 !important;
   color:#fff !important;
+  border-radius:9999px;
+}
+#calendarGrid button.range-start::after,
+#calendarGrid button.range-end::after{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:50%;
+  background:#F7E2BB;
+  z-index:-1;
+}
+#calendarGrid button.range-start::after{ left:50%; }
+#calendarGrid button.range-end::after{ right:50%; }
+#calendarGrid button.no-after::after{ display:none; }
+#calendarGrid button.in-range{
+  background:#F7E2BB;
+  color:#232323;
+  border-radius:0;
+}
+
+/* ------- Search bar glass effect ------- */
+.search-field{
+  position:relative;
+  border-radius:0.75rem;
+  transition:background .3s, box-shadow .3s;
+}
+.search-field.glass-active{
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(6px);
+  box-shadow:0 0 0 2px rgba(228,177,101,0.6);
 }

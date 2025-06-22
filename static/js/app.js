@@ -1,3 +1,9 @@
+let whereField, checkinField, checkoutField, whoField;
+let searchFields = [];
+function setActiveField(el){
+  searchFields.forEach(f => f?.classList.toggle('glass-active', f===el));
+}
+
 // Mobile Navbar Toggle (if not handled inline)
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('mobile-menu-button');
@@ -21,6 +27,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 300);
     });
   });
+
+  /* ------- Search bar glass focus ------- */
+  whereField    = document.getElementById('whereField');
+  checkinField  = document.getElementById('checkinField');
+  checkoutField = document.getElementById('checkoutField');
+  whoField      = document.getElementById('whoField');
+  searchFields  = [whereField, checkinField, checkoutField, whoField];
+
+  const whereInput = document.querySelector('input[name="q"]');
+  whereInput?.addEventListener('focus', ()=> setActiveField(whereField));
+  whereInput?.addEventListener('blur',  ()=> setActiveField(null));
 
   // Brand color hover for anchor tags
   document.querySelectorAll('a').forEach(a => {
@@ -74,7 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const whoCounts    = { adults:0, children:0, infants:0, pets:0 };
 
   window.toggleWhoDropdown = function(){
-    if(whoDropdown) whoDropdown.classList.toggle('hidden');
+    if(!whoDropdown) return;
+    whoDropdown.classList.toggle('hidden');
+    setActiveField(whoDropdown.classList.contains('hidden') ? null : whoField);
   }
 
   window.updateWho = function(type, delta){
@@ -95,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!whoDropdown || !whoInput) return;
     if(!whoDropdown.contains(e.target) && !whoInput.contains(e.target)){
       whoDropdown.classList.add('hidden');
+      setActiveField(null);
     }
   });
 });
@@ -115,6 +135,7 @@ const calClear       = document.getElementById('calClear');
 let currentMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // first of this month
 let startDate = null;
 let endDate   = null;
+let calendarField = null; // 'checkin' or 'checkout'
 
 /* -------- helpers for calendar ---------- */
 const monthNamesFull = ['January','February','March','April','May','June','July',
@@ -128,7 +149,7 @@ function createMonthGrid(dateObj){
   const startWeekD = firstDay.getDay();                        // 0‑6
   const daysInMon  = new Date(y,m+1,0).getDate();             // 28‑31
 
-  let html = `<div class="flex flex-col gap-2"><div class="font-semibold text-[#232323] text-lg text-center">${monthNamesFull[m]} ${y}</div><div class="grid grid-cols-7 gap-2">`;
+  let html = `<div class="flex flex-col gap-2"><div class="font-semibold text-[#232323] text-lg text-center">${monthNamesFull[m]} ${y}</div><div class="grid grid-cols-7 gap-0">`;
   // weekday labels
   weekDays.forEach(d=>{ html += `<div class="font-medium text-gray-400">${d}</div>`; });
   // leading blanks
@@ -136,8 +157,7 @@ function createMonthGrid(dateObj){
   // days
   for(let d=1; d<=daysInMon; d++){
     const iso = new Date(y,m,d).toISOString().split('T')[0];
-    const active = (startDate && iso===startDate) || (endDate && iso===endDate);
-    html += `<button class="${active?'selected':''}" data-date="${iso}">${d}</button>`;
+    html += `<button type="button" data-date="${iso}">${d}</button>`;
   }
   html += '</div></div>';
   return html;
@@ -154,7 +174,8 @@ function renderCalendar(){
 
   // wire up day clicks
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
+    btn.addEventListener('click',(e)=>{
+      e.preventDefault();
       const iso = btn.dataset.date;
       if(!startDate || (startDate && endDate)){
         startDate = iso;
@@ -172,38 +193,65 @@ function renderCalendar(){
 }
 
 function highlightSelection(){
+  const start = startDate ? new Date(startDate) : null;
+  const end   = endDate ? new Date(endDate) : null;
+
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    btn.classList.remove('selected');
-    if(btn.dataset.date===startDate || btn.dataset.date===endDate){
-      btn.classList.add('selected');
+    const d = new Date(btn.dataset.date);
+    btn.classList.remove('range-start','range-end','in-range','no-after');
+
+    if(start && btn.dataset.date===startDate){
+      btn.classList.add('range-start');
+      if(!end || start.getTime()===end.getTime()) btn.classList.add('no-after');
+    }
+    if(end && btn.dataset.date===endDate){
+      btn.classList.add('range-end');
+      if(!start || start.getTime()===end.getTime()) btn.classList.add('no-after');
+    }
+    if(start && end && d > start && d < end){
+      btn.classList.add('in-range');
     }
   });
+
+  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
+  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  calDropdown.dataset.start = startDate || '';
+  calDropdown.dataset.end   = endDate || '';
+
+  if(start && !end){
+    calendarField = 'checkout';
+    setActiveField(checkoutField);
+  }else if(start && end){
+    calendarField = null;
+    setActiveField(null);
+  }else{
+    calendarField = 'checkin';
+    setActiveField(checkinField);
+  }
 }
 
-window.toggleCalendar = function(){
+window.toggleCalendar = function(which){
   if(!calDropdown) return;
+  if(which) calendarField = which;
   calDropdown.classList.toggle('hidden');
   if(!calDropdown.classList.contains('hidden')) {
     renderCalendar();
+    setActiveField(calendarField==='checkout'?checkoutField:checkinField);
+  } else {
+    setActiveField(null);
   }
 }
 
 calPrev?.addEventListener('click',()=>{ currentMonth.setMonth(currentMonth.getMonth()-1); renderCalendar(); });
 calNext?.addEventListener('click',()=>{ currentMonth.setMonth(currentMonth.getMonth()+1); renderCalendar(); });
 calClear?.addEventListener('click',()=>{
-  startDate=null; endDate=null;
-  checkInInput.value='Add dates';
-  checkOutInput.value='Add dates';
-  calDropdown.dataset.start='';
-  calDropdown.dataset.end='';
+  startDate = null;
+  endDate   = null;
   highlightSelection();
 });
 calApply?.addEventListener('click',()=>{
-  if(startDate){ checkInInput.value = new Date(startDate).toLocaleDateString(); }
-  if(endDate){   checkOutInput.value = new Date(endDate).toLocaleDateString(); }
-  calDropdown.dataset.start=startDate||'';
-  calDropdown.dataset.end=endDate||'';
   calDropdown.classList.add('hidden');
+  setActiveField(null);
 });
 
 // close when clicking outside
@@ -211,5 +259,6 @@ window.addEventListener('click',e=>{
   if(!calDropdown || calDropdown.classList.contains('hidden')) return;
   if(!calDropdown.contains(e.target) && !checkInInput.contains(e.target) && !checkOutInput.contains(e.target)){
     calDropdown.classList.add('hidden');
+    setActiveField(null);
   }
 });
