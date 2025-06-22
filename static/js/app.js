@@ -322,13 +322,23 @@ document.addEventListener('DOMContentLoaded', () => {
       selStart && selEnd ? `${selStart} – ${selEnd}` : '';
   }
 
-  grid.addEventListener('click', e=>{
+  grid.addEventListener('click', e => {
     const btn = e.target.closest('button[data-date]');
-    if(!btn || btn.disabled) return;
+    if (!btn || btn.disabled) return;
     const iso = btn.dataset.date;
-    if(!selStart || (selStart && selEnd)){ selStart = iso; selEnd = null; }
-    else if(new Date(iso) >= new Date(selStart)){ selEnd = iso; }
-    else { selStart = iso; selEnd = null; }
+    if (!selStart || selEnd) {
+      // starting fresh or restarting after a complete range
+      selStart = iso;
+      selEnd = null;
+    } else if (selStart && !selEnd) {
+      // when only a start date is chosen, clicking another date resets it
+      if (iso === selStart) {
+        selStart = null;
+      } else {
+        selStart = iso;
+      }
+      selEnd = null;
+    }
     highlight();
   });
 
