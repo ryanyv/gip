@@ -22,20 +22,22 @@
           {{ user.position }}
         </p>
         {% endif %}
-        {% if user.role == 'staff' and user.phone_number %}
-        <p class="flex items-center gap-2 text-gray-700">
-          <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2 8.5c0 7.456 6.044 13.5 13.5 13.5a3 3 0 0 0 3-3v-2.4a1 1 0 0 0-.758-.97l-3.776-.944a1 1 0 0 0-1.21.652l-.432 1.3c-.185.56-.762.888-1.328.73a10.5 10.5 0 0 1-6.842-6.842.998.998 0 0 1 .73-1.328l1.3-.432a1 1 0 0 0 .652-1.21l-.944-3.776A1 1 0 0 0 8.4 2H6a3 3 0 0 0-3 3C3 7.456 3 8.5 3 8.5Z" />
-          </svg>
-          {{ user.phone_number }}
-        </p>
+        {% if user.role == 'staff' %}
+          {% if user.phone_number %}
+          <p class="flex items-center gap-2 text-gray-700">
+            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2 8.5c0 7.456 6.044 13.5 13.5 13.5a3 3 0 0 0 3-3v-2.4a1 1 0 0 0-.758-.97l-3.776-.944a1 1 0 0 0-1.21.652l-.432 1.3c-.185.56-.762.888-1.328.73a10.5 10.5 0 0 1-6.842-6.842.998.998 0 0 1 .73-1.328l1.3-.432a1 1 0 0 0 .652-1.21l-.944-3.776A1 1 0 0 0 8.4 2H6a3 3 0 0 0-3 3C3 7.456 3 8.5 3 8.5Z" />
+            </svg>
+            {{ user.phone_number }}
+          </p>
+          {% endif %}
         {% else %}
-        <p class="flex items-center gap-2 text-gray-700">
-          <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-          </svg>
-          {{ user.role|capfirst }}
-        </p>
+          <p class="flex items-center gap-2 text-gray-700">
+            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+            {{ user.role|capfirst }}
+          </p>
         {% endif %}
         <a href="{% url 'admin:accounts_user_change' user.id %}" class="inline-block mt-6 button-gold px-6 py-2">Edit Profile</a>
       </div>
