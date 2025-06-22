@@ -8,7 +8,7 @@
       <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
       <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Register</h2>
     </div>
-    <form method="post" class="space-y-6">
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
       <div>
         <label for="id_username" class="block text-sm font-medium text-gold">Username</label>
@@ -24,6 +24,11 @@
         <label for="id_phone" class="block text-sm font-medium text-gold">Phone (optional)</label>
         <input id="id_phone" name="phone" type="text"
                class="appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md placeholder-gray-400 text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm">
+      </div>
+      <div>
+        <label for="id_profile_photo" class="block text-sm font-medium text-gold">Profile photo (optional)</label>
+        <input id="id_profile_photo" name="profile_photo" type="file"
+               class="appearance-none block w-full text-sm text-gray-400" />
       </div>
       <div>
         <label for="id_password1" class="block text-sm font-medium text-gold">Password</label>
