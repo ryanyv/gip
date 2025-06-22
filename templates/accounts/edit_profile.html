@@ -12,10 +12,16 @@
         {% endfor %}
       </ul>
     {% endif %}
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
+    <form method="post" enctype="multipart/form-data" class="space-y-4 text-center">
       {% csrf_token %}
       {{ form.non_field_errors }}
-      <div>
+      <div class="flex justify-center mb-4">
+        <label for="id_profile_photo" class="cursor-pointer inline-block">
+          <img id="profile-preview" src="{{ user.profile_photo_url }}" alt="Profile photo" class="w-32 h-32 rounded-full object-cover border-2 border-gold" />
+        </label>
+        {{ form.profile_photo }}
+      </div>
+      <div class="text-left">
         <label class="block text-sm font-medium text-gold" for="id_first_name">First name</label>
         {{ form.first_name }}
       </div>
@@ -35,10 +41,6 @@
         <label class="block text-sm font-medium text-gold" for="id_phone_number">Phone number</label>
         {{ form.phone_number }}
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gold" for="id_profile_photo">Profile photo</label>
-        {{ form.profile_photo }}
-      </div>
       <div class="flex justify-between items-center">
         <button type="submit" class="button-gold">Save</button>
         <a href="{% url 'password_change' %}" class="text-gold hover:text-[#EFCB89]">Change Password</a>
@@ -46,4 +48,16 @@
     </form>
   </div>
 </div>
+<script>
+  const input = document.getElementById('id_profile_photo');
+  const preview = document.getElementById('profile-preview');
+  if(input && preview){
+    input.addEventListener('change', e => {
+      const [file] = input.files;
+      if(file){
+        preview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+</script>
 {% endblock %}
