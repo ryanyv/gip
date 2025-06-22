@@ -25,6 +25,10 @@ a:hover, .hover\:text-gold:hover {
   background: linear-gradient(90deg, #E4B165 0%, #EFCB89 100%) !important;
 }
 
+.bg-gip {
+  background-color: var(--gip-bg) !important;
+}
+
 .button-gold {
   background: var(--gip-gold);
   color: #232323;

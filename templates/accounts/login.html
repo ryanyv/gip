@@ -4,11 +4,11 @@
 {% load static %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
     <div class="flex flex-col items-center mb-6">
       <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
-      <h2 class="mt-2 text-center text-2xl font-extrabold text-gray-900">Admin Login</h2>
+      <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Login</h2>
     </div>
     {% if form.errors %}
       <div class="mb-4 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
@@ -18,18 +18,18 @@
     <form method="post" class="space-y-6">
       {% csrf_token %}
       <div>
-        <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label>
+        <label for="id_username" class="block text-sm font-medium text-gold">Username</label>
         <input id="id_username" name="username" type="text" autocomplete="username" required autofocus
-               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+               class="appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md placeholder-gray-400 text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm">
       </div>
       <div>
-        <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label>
+        <label for="id_password" class="block text-sm font-medium text-gold">Password</label>
         <input id="id_password" name="password" type="password" autocomplete="current-password" required
-               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+               class="appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md placeholder-gray-400 text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm">
       </div>
       <div>
         <button type="submit"
-                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-blue-700 hover:bg-blue-800 text-white focus:outline-none">
+                class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">
           Log in
         </button>
       </div>
