@@ -1,6 +1,10 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordChangeView
+from .forms import UserUpdateForm
 
 
 def logout_view(request):
@@ -15,3 +19,19 @@ def profile_view(request):
     """Display the logged in user's profile."""
     return render(request, 'accounts/profile.html')
 
+@login_required
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect('profile')
+    else:
+        form = UserUpdateForm(instance=user)
+    return render(request, 'accounts/edit_profile.html', {'form': form})
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    success_url = reverse_lazy('profile')

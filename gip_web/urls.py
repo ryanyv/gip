@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from accounts.views import logout_view, profile_view
+from accounts.views import logout_view, profile_view, edit_profile, CustomPasswordChangeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,8 @@ urlpatterns = [
     path('admin-panel/', include('admin_panel.urls')),
     path('accounts/', include('accounts.urls')),
     path('profile/', profile_view, name='profile'),
+    path('profile/edit/', edit_profile, name='edit_profile'),
+    path('password-change/', CustomPasswordChangeView.as_view(), name='password_change'),
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', logout_view, name='logout'),
 ]

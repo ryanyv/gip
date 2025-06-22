@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
+    <h2 class="text-center text-2xl font-extrabold text-gold mb-6">Edit Profile</h2>
+    {% if messages %}
+      <ul class="mb-4">
+        {% for message in messages %}
+          <li class="text-green-500">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_first_name">First name</label>
+        {{ form.first_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_last_name">Last name</label>
+        {{ form.last_name }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_username">Username</label>
+        {{ form.username }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_email">Email</label>
+        {{ form.email }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_phone_number">Phone number</label>
+        {{ form.phone_number }}
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gold" for="id_profile_photo">Profile photo</label>
+        {{ form.profile_photo }}
+      </div>
+      <div class="flex justify-between items-center">
+        <button type="submit" class="button-gold">Save</button>
+        <a href="{% url 'password_change' %}" class="text-gold hover:text-[#EFCB89]">Change Password</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

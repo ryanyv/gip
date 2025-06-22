@@ -39,7 +39,7 @@
             {{ user.role|capfirst }}
           </p>
         {% endif %}
-        <a href="{% url 'admin:accounts_user_change' user.id %}" class="inline-block mt-6 button-gold px-6 py-2">Edit Profile</a>
+        <a href="{% url 'edit_profile' %}" class="inline-block mt-6 button-gold px-6 py-2">Edit Profile</a>
       </div>
     </div>
   </div>
