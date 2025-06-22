@@ -22,6 +22,10 @@ def property_list(request):
     })
 
 def property_detail(request, pk):
+    from django.core.mail import send_mail  # Optional: if you want to send emails
+    from django.contrib import messages
+    from django.utils import timezone
+
     property = get_object_or_404(Property, pk=pk)
     # Get all bookings with status 'booked'
     bookings = Booking.objects.filter(property=property, status='booked')
@@ -33,7 +37,54 @@ def property_detail(request, pk):
         }
         for booking in bookings
     ]
+
+    reservation_error = None
+    reservation_success = None
+
+    # Reservation logic (POST)
+    if request.method == "POST":
+        start_date_str = request.POST.get('start_date')
+        end_date_str   = request.POST.get('end_date')
+        guest_name     = request.POST.get('guest_name')
+        guest_email    = request.POST.get('guest_email')
+        user = request.user if request.user.is_authenticated else None
+
+        from datetime import datetime
+        try:
+            start_date = datetime.fromisoformat(start_date_str).date() if start_date_str else None
+            end_date   = datetime.fromisoformat(end_date_str).date() if end_date_str else None
+        except Exception:
+            start_date = end_date = None
+
+        # Validate input
+        if not start_date or not end_date or start_date >= end_date:
+            reservation_error = "Please select a valid date range."
+        else:
+            # Check for overlap with any booked range
+            overlap = Booking.objects.filter(
+                property=property,
+                status='booked',
+                start_date__lt=end_date,
+                end_date__gt=start_date
+            ).exists()
+            if overlap:
+                reservation_error = "Those dates are already booked."
+            else:
+                booking = Booking.objects.create(
+                    property=property,
+                    user=user,
+                    start_date=start_date,
+                    end_date=end_date,
+                    guest_name=guest_name if not user else user.get_full_name(),
+                    guest_email=guest_email if not user else user.email,
+                    status='booked'
+                )
+                reservation_success = "Reservation successful! We will contact you soon."
+                # Optionally, send email to admin/guest here
+
     return render(request, 'properties/property_detail.html', {
         'property': property,
-        'booked_dates_json': json.dumps(booked_dates, cls=DjangoJSONEncoder)
+        'booked_dates_json': json.dumps(booked_dates, cls=DjangoJSONEncoder),
+        'reservation_error': reservation_error,
+        'reservation_success': reservation_success,
     })

@@ -126,5 +126,59 @@
     </div>
   </div>
 
+  <!-- Reservation Form/Modal -->
+  <div id="reserve" class="mt-10 p-6 bg-[#FFF6E8] rounded-xl shadow flex flex-col gap-4">
+    <h3 class="text-xl font-bold text-gold mb-1">Reserve This Property</h3>
+    <form method="post" action="">
+      {% csrf_token %}
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <label for="start_date" class="block font-medium text-gray-700 mb-1">Check-in</label>
+          <input type="text" name="start_date" id="start_date" class="w-full rounded-lg border border-gray-300 p-2" readonly value="{{ form.start_date.value|default:'' }}">
+        </div>
+        <div class="flex-1">
+          <label for="end_date" class="block font-medium text-gray-700 mb-1">Check-out</label>
+          <input type="text" name="end_date" id="end_date" class="w-full rounded-lg border border-gray-300 p-2" readonly value="{{ form.end_date.value|default:'' }}">
+        </div>
+        {% if not user.is_authenticated %}
+        <div class="flex-1">
+          <label for="guest_name" class="block font-medium text-gray-700 mb-1">Your Name</label>
+          <input type="text" name="guest_name" id="guest_name" class="w-full rounded-lg border border-gray-300 p-2" required>
+        </div>
+        <div class="flex-1">
+          <label for="guest_email" class="block font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" name="guest_email" id="guest_email" class="w-full rounded-lg border border-gray-300 p-2" required>
+        </div>
+        {% endif %}
+      </div>
+      <div class="mt-4 flex gap-4 items-center">
+        <button type="submit" class="bg-gold text-[#232323] font-bold px-8 py-3 rounded-lg shadow hover:scale-105 transition">Reserve</button>
+        {% if reservation_error %}
+          <span class="text-red-500 font-semibold">{{ reservation_error }}</span>
+        {% endif %}
+        {% if reservation_success %}
+          <span class="text-green-600 font-semibold">{{ reservation_success }}</span>
+        {% endif %}
+      </div>
+    </form>
+    <p class="text-xs text-gray-500 mt-2">You won’t be charged yet. Selecting dates will auto-fill the fields above.</p>
+  </div>
+
 </div>
+<script>
+// Auto-fill reservation dates from calendar selection
+document.addEventListener('DOMContentLoaded', function() {
+  const inBox = document.getElementById('start_date');
+  const outBox = document.getElementById('end_date');
+  const calGrid = document.getElementById('detailCalendarGrid');
+  if (!inBox || !outBox || !calGrid) return;
+  calGrid.addEventListener('click', function() {
+    // Find highlighted buttons for range
+    const s = calGrid.querySelector('button.range-start');
+    const e = calGrid.querySelector('button.range-end');
+    inBox.value = s ? s.dataset.date : '';
+    outBox.value = e ? e.dataset.date : '';
+  });
+});
+</script>
 {% endblock %}
