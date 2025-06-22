@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-[#232323] p-6 rounded-lg shadow-lg border border-gold">
+  <h1 class="text-2xl font-bold mb-4 text-center">Login</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="mt-4 text-center">
+      <button type="submit" class="button-gold px-4 py-2 rounded">Log In</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

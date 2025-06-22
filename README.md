@@ -31,4 +31,5 @@ This is a Django web application for property listings.
 
 - Visit `/` for the homepage and `/properties/` for property listings.
 - The admin interface is available at `/admin/` when the server is running.
+- The login page is available at `/login/` and will redirect back to the page you were viewing after authentication.
 
