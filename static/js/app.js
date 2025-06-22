@@ -326,18 +326,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = e.target.closest('button[data-date]');
     if (!btn || btn.disabled) return;
     const iso = btn.dataset.date;
-    if (!selStart || selEnd) {
-      // starting fresh or restarting after a complete range
+    if (!selStart || (selStart && selEnd)) {
+      // no start chosen or full range already selected
       selStart = iso;
       selEnd = null;
     } else if (selStart && !selEnd) {
-      // when only a start date is chosen, clicking another date resets it
-      if (iso === selStart) {
-        selStart = null;
+      // choosing an end date or restarting start earlier in time
+      if (new Date(iso) >= new Date(selStart)) {
+        selEnd = iso;
       } else {
         selStart = iso;
       }
-      selEnd = null;
     }
     highlight();
   });
