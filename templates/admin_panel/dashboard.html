@@ -19,11 +19,7 @@
         </p>
       </div>
       <div class="mt-6 md:mt-0 flex-shrink-0 flex flex-col items-center gap-3">
-        {% if request.user.profile_photo %}
-          <img src="{{ request.user.profile_photo.url }}" alt="Profile Photo" class="h-20 w-20 rounded-full shadow-md border border-gray-200 object-cover" />
-        {% else %}
-          <img src="{% static 'images/default-avatar.png' %}" alt="No Photo" class="h-20 w-20 rounded-full shadow-md border border-gray-200 object-cover" />
-        {% endif %}
+        <img src="{{ request.user.profile_photo_url }}" alt="Profile Photo" class="h-20 w-20 rounded-full shadow-md border border-gray-200 object-cover" />
         <a href="{% url 'admin:accounts_user_change' request.user.id %}" class="text-blue-500 hover:underline text-xs mt-2">Edit Profile</a>
       </div>
     </div>

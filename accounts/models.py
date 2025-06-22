@@ -1,6 +1,7 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.templatetags.static import static
 
 USER_ROLES = [
     ('superadmin', 'Super Admin'),
@@ -17,6 +18,13 @@ class User(AbstractUser):
     profile_photo = models.ImageField(upload_to=user_avatar_path, blank=True, null=True)
     role = models.CharField(max_length=20, choices=USER_ROLES, default='staff')
     position = models.CharField(max_length=100, blank=True, null=True)
+
+    @property
+    def profile_photo_url(self):
+        """Return the URL for the user's profile photo or the default image."""
+        if self.profile_photo:
+            return self.profile_photo.url
+        return static('photos/default_profile_image.png')
 
     def __str__(self):
         return self.get_full_name() or self.username
