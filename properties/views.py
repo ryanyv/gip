@@ -1,15 +1,46 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Property
-import json
-from datetime import timedelta
 from .models import Booking
+import json
+from datetime import timedelta, date
+from django.db.models import Q
 from django.core.serializers.json import DjangoJSONEncoder
 
 def property_list(request):
     filter_type = request.GET.get('type')
+    q = request.GET.get('q')
+    checkin = request.GET.get('checkin')
+    checkout = request.GET.get('checkout')
+    guests = request.GET.get('guests')
+
     qs = Property.objects.all()
+
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
+
+    if q:
+        qs = qs.filter(Q(location__icontains=q) | Q(name__icontains=q))
+
+    if guests:
+        try:
+            guest_count = int(guests)
+            qs = qs.filter(guests__gte=guest_count)
+        except ValueError:
+            pass
+
+    # Date range filtering - exclude properties with overlapping bookings
+    if checkin and checkout:
+        try:
+            start = date.fromisoformat(checkin)
+            end = date.fromisoformat(checkout)
+            qs = qs.exclude(
+                bookings__status='booked',
+                bookings__start_date__lt=end,
+                bookings__end_date__gt=start,
+            )
+        except ValueError:
+            pass
+
     properties = qs.order_by('-created_at')
     # Ranges for filter dropdowns
     guest_range = range(1, 13)     # 1‑12 guests

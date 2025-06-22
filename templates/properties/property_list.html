@@ -24,6 +24,7 @@
         <span class="text-base font-bold text-[#232323]">Check in</span>
         <input type="text"
                name="checkin"
+               value="{{ request.GET.checkin|default_if_none:'' }}"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar()"
@@ -36,6 +37,7 @@
         <span class="text-base font-bold text-[#232323]">Check out</span>
         <input type="text"
                name="checkout"
+               value="{{ request.GET.checkout|default_if_none:'' }}"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar()"
@@ -69,13 +71,13 @@
         <input
           id="whoInput"
           type="text"
-          name="guests"
           readonly
-          value="Add guests"
+          value="{{ request.GET.guests|default:'Add guests' }}"
           placeholder="Add guests"
           class="w-full text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer"
           onclick="toggleWhoDropdown()"
         />
+        <input type="hidden" id="guestsHidden" name="guests" value="{{ request.GET.guests|default:'' }}" />
 
         <!-- Dropdown -->
         <div id="whoDropdown"

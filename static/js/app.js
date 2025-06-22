@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
   /* -------------- Who dropdown -------------- */
   const whoInput     = document.getElementById('whoInput');
   const whoDropdown  = document.getElementById('whoDropdown');
+  const whoHidden    = document.getElementById('guestsHidden');
   const whoCounts    = { adults:0, children:0, infants:0, pets:0 };
 
   window.toggleWhoDropdown = function(){
@@ -88,6 +89,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if(whoCounts.infants)  parts.push(`${whoCounts.infants} infants`);
     if(whoCounts.pets)     parts.push(`${whoCounts.pets} pets`);
     whoInput.value = parts.length ? parts.join(', ') : 'Add guests';
+    if(whoHidden){
+      const total = whoCounts.adults + whoCounts.children + whoCounts.infants + whoCounts.pets;
+      whoHidden.value = total > 0 ? total : '';
+    }
   }
 
   // close on click outside
@@ -199,8 +204,8 @@ calClear?.addEventListener('click',()=>{
   highlightSelection();
 });
 calApply?.addEventListener('click',()=>{
-  if(startDate){ checkInInput.value = new Date(startDate).toLocaleDateString(); }
-  if(endDate){   checkOutInput.value = new Date(endDate).toLocaleDateString(); }
+  if(startDate){ checkInInput.value = startDate; }
+  if(endDate){   checkOutInput.value = endDate; }
   calDropdown.dataset.start=startDate||'';
   calDropdown.dataset.end=endDate||'';
   calDropdown.classList.add('hidden');
