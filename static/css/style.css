@@ -127,6 +127,10 @@ a:hover, .hover\:text-gold:hover {
 }
 #calendarGrid button:hover{
   background:#F7E2BB;
+  border-radius:9999px;
+}
+#calendarGrid button.in-range:hover{
+  border-radius:0;
 }
 #calendarGrid button.range-start,
 #calendarGrid button.range-end{
