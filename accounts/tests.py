@@ -15,6 +15,10 @@ class AuthRoutesTest(TestCase):
         response = self.client.get('/register/')
         self.assertEqual(response.status_code, 200)
 
+    def test_login_page_has_register_link(self):
+        response = self.client.get('/login/')
+        self.assertContains(response, 'href="/register/"')
+
     def test_logout_logs_out_and_redirects(self):
         self.client.login(username='testuser', password='testpass')
         response = self.client.get('/logout/', follow=True)
