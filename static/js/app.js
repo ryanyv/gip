@@ -1,3 +1,9 @@
+let whereField, checkinField, checkoutField, whoField;
+let searchFields = [];
+function setActiveField(el){
+  searchFields.forEach(f => f?.classList.toggle('glass-active', f===el));
+}
+
 // Mobile Navbar Toggle (if not handled inline)
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('mobile-menu-button');
@@ -21,6 +27,17 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 300);
     });
   });
+
+  /* ------- Search bar glass focus ------- */
+  whereField    = document.getElementById('whereField');
+  checkinField  = document.getElementById('checkinField');
+  checkoutField = document.getElementById('checkoutField');
+  whoField      = document.getElementById('whoField');
+  searchFields  = [whereField, checkinField, checkoutField, whoField];
+
+  const whereInput = document.querySelector('input[name="q"]');
+  whereInput?.addEventListener('focus', ()=> setActiveField(whereField));
+  whereInput?.addEventListener('blur',  ()=> setActiveField(null));
 
   // Brand color hover for anchor tags
   document.querySelectorAll('a').forEach(a => {
@@ -74,7 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const whoCounts    = { adults:0, children:0, infants:0, pets:0 };
 
   window.toggleWhoDropdown = function(){
-    if(whoDropdown) whoDropdown.classList.toggle('hidden');
+    if(!whoDropdown) return;
+    whoDropdown.classList.toggle('hidden');
+    setActiveField(whoDropdown.classList.contains('hidden') ? null : whoField);
   }
 
   window.updateWho = function(type, delta){
@@ -95,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!whoDropdown || !whoInput) return;
     if(!whoDropdown.contains(e.target) && !whoInput.contains(e.target)){
       whoDropdown.classList.add('hidden');
+      setActiveField(null);
     }
   });
 });
@@ -115,6 +135,7 @@ const calClear       = document.getElementById('calClear');
 let currentMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // first of this month
 let startDate = null;
 let endDate   = null;
+let calendarField = null; // 'checkin' or 'checkout'
 
 /* -------- helpers for calendar ---------- */
 const monthNamesFull = ['January','February','March','April','May','June','July',
@@ -196,13 +217,28 @@ function highlightSelection(){
   checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
+
+  if(start && !end){
+    calendarField = 'checkout';
+    setActiveField(checkoutField);
+  }else if(start && end){
+    calendarField = null;
+    setActiveField(null);
+  }else{
+    calendarField = 'checkin';
+    setActiveField(checkinField);
+  }
 }
 
-window.toggleCalendar = function(){
+window.toggleCalendar = function(which){
   if(!calDropdown) return;
+  if(which) calendarField = which;
   calDropdown.classList.toggle('hidden');
   if(!calDropdown.classList.contains('hidden')) {
     renderCalendar();
+    setActiveField(calendarField==='checkout'?checkoutField:checkinField);
+  } else {
+    setActiveField(null);
   }
 }
 
@@ -215,6 +251,7 @@ calClear?.addEventListener('click',()=>{
 });
 calApply?.addEventListener('click',()=>{
   calDropdown.classList.add('hidden');
+  setActiveField(null);
 });
 
 // close when clicking outside
@@ -222,5 +259,6 @@ window.addEventListener('click',e=>{
   if(!calDropdown || calDropdown.classList.contains('hidden')) return;
   if(!calDropdown.contains(e.target) && !checkInInput.contains(e.target) && !checkOutInput.contains(e.target)){
     calDropdown.classList.add('hidden');
+    setActiveField(null);
   }
 });

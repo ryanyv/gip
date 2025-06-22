@@ -157,3 +157,15 @@ a:hover, .hover\:text-gold:hover {
   color:#232323;
   border-radius:0;
 }
+
+/* ------- Search bar glass effect ------- */
+.search-field{
+  position:relative;
+  border-radius:0.75rem;
+  transition:background .3s, box-shadow .3s;
+}
+.search-field.glass-active{
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(6px);
+  box-shadow:0 0 0 2px rgba(228,177,101,0.6);
+}
