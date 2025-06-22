@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ${mNames[m]} ${y}
       </div>
       <div class="grid grid-cols-7 gap-0">`;
-    wNames.forEach(d=> html += `<div class="text-xs font-medium text-gray-400">${d}</div>`);
+    wNames.forEach(d=> html += `<div class="text-xs font-medium text-center text-gray-400">${d}</div>`);
     for(let b=0;b<lead;b++) html += '<div></div>';
     for(let d=1;d<=days;d++){
       const iso = new Date(y,m,d).toISOString().split('T')[0];
@@ -312,12 +312,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function highlight(){
     grid.querySelectorAll('button[data-date]').forEach(b=>{
       const iso = b.dataset.date;
-      b.classList.remove('range-start','range-end','in-range','bg-gold','text-white','bg-[#F8ECD8]');
-      if (iso===selStart) b.classList.add('range-start','bg-gold','text-white');
-      if (iso===selEnd)   b.classList.add('range-end','bg-gold','text-white');
-      if (selStart && selEnd && iso>selStart && iso<selEnd)
+      b.classList.remove('range-start','range-end','in-range','no-after');
+      b.classList.remove('bg-gold','text-white','bg-[#F8ECD8]');
+
+      if(selStart && iso===selStart){
+        b.classList.add('range-start','bg-gold','text-white');
+        if(!selEnd || selStart===selEnd) b.classList.add('no-after');
+      }
+      if(selEnd && iso===selEnd){
+        b.classList.add('range-end','bg-gold','text-white');
+        if(!selStart || selStart===selEnd) b.classList.add('no-after');
+      }
+      if(selStart && selEnd && iso>selStart && iso<selEnd){
         b.classList.add('in-range','bg-[#F8ECD8]');
+      }
     });
+
     document.getElementById('detailSelected').textContent =
       selStart && selEnd ? `${selStart} – ${selEnd}` : '';
   }
