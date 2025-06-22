@@ -57,3 +57,7 @@ class UserRegistrationForm(UserCreationForm):
                 field.widget.attrs["class"] = "hidden"
             else:
                 field.widget.attrs.setdefault("class", css_class)
+
+            if field.help_text:
+                auto_id = self.auto_id % self.add_prefix(name)
+                field.widget.attrs.setdefault("data-hover-help", f"{auto_id}_helptext")

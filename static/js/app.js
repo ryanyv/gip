@@ -357,3 +357,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   render();
 });
+
+// Show form field help text on hover after 1 second
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-hover-help]').forEach(input => {
+    const help = document.getElementById(input.dataset.hoverHelp);
+    if (!help) return;
+    let timer;
+    input.addEventListener('mouseenter', () => {
+      timer = setTimeout(() => help.classList.remove('hidden'), 1000);
+    });
+    const hide = () => {
+      clearTimeout(timer);
+      help.classList.add('hidden');
+    };
+    input.addEventListener('mouseleave', hide);
+    input.addEventListener('blur', hide);
+  });
+});

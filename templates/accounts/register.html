@@ -18,10 +18,12 @@
       {% csrf_token %}
       {% for field in form %}
         {% if field.name != 'profile_photo' %}
-        <div>
+        <div class="relative">
           <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gold">{{ field.label }}</label>
           {{ field }}
-          {% if field.help_text %}<p class="text-xs text-gray-400">{{ field.help_text }}</p>{% endif %}
+          {% if field.help_text %}
+            <p id="{{ field.id_for_label }}_helptext" class="help-text absolute z-10 mt-1 text-xs text-gray-400 bg-[#1f1f1f] border border-gold rounded p-2 hidden">{{ field.help_text|safe }}</p>
+          {% endif %}
           {% for error in field.errors %}<p class="text-red-600 text-sm">{{ error }}</p>{% endfor %}
         </div>
         {% endif %}
