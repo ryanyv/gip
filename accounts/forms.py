@@ -52,5 +52,8 @@ class UserRegistrationForm(UserCreationForm):
             "border-gold rounded-md placeholder-gray-400 text-white "
             "focus:outline-none focus:ring-gold focus:border-gold sm:text-sm"
         )
-        for field in self.fields.values():
-            field.widget.attrs.setdefault("class", css_class)
+        for name, field in self.fields.items():
+            if name == "profile_photo":
+                field.widget.attrs["class"] = "hidden"
+            else:
+                field.widget.attrs.setdefault("class", css_class)

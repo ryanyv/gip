@@ -6,6 +6,9 @@
   <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
     <div class="flex flex-col items-center mb-6 space-y-2">
       <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gold flex items-center justify-center">
+        <label for="{{ form.profile_photo.id_for_label }}" class="cursor-pointer">
+          <img src="{% static 'photos/default_profile_image.png' %}" alt="Profile photo" class="w-24 h-24 object-cover"/>
+        </label>
         {{ form.profile_photo }}
       </div>
       {% for error in form.profile_photo.errors %}<p class="text-red-600 text-sm">{{ error }}</p>{% endfor %}
