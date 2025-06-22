@@ -262,3 +262,79 @@ window.addEventListener('click',e=>{
     setActiveField(null);
   }
 });
+
+/* -------- Property-detail availability calendar -------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const grid   = document.getElementById('detailCalendarGrid');
+  const jsonEl = document.getElementById('bookedDatesJSON');
+  if (!grid || !jsonEl) return;                       // not on detail page
+
+  const booked = JSON.parse(jsonEl.textContent || '[]');
+  const isBlocked = iso =>
+    booked.some(r => iso >= r.start && iso <= r.end);
+
+  let showMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let selStart  = null;
+  let selEnd    = null;
+
+  const mNames  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const wNames  = ['S','M','T','W','T','F','S'];
+
+  function monthGrid(dt){
+    const y = dt.getFullYear(), m = dt.getMonth();
+    const lead = new Date(y,m,1).getDay();
+    const days = new Date(y,m+1,0).getDate();
+    let html = `<div class="flex flex-col gap-2 min-w-[230px]">
+      <div class="font-semibold text-lg text-center text-[#232323]">
+        ${mNames[m]} ${y}
+      </div>
+      <div class="grid grid-cols-7 gap-0">`;
+    wNames.forEach(d=> html += `<div class="text-xs font-medium text-gray-400">${d}</div>`);
+    for(let b=0;b<lead;b++) html += '<div></div>';
+    for(let d=1;d<=days;d++){
+      const iso = new Date(y,m,d).toISOString().split('T')[0];
+      const dis = isBlocked(iso);
+      html += `<button data-date="${iso}" ${dis?'disabled':''}
+               class="h-8 w-8 flex items-center justify-center rounded
+               ${dis?'opacity-30 cursor-not-allowed':'hover:bg-[#F8ECD8]'}">
+               ${d}</button>`;
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function render(){
+    const next = new Date(showMonth.getFullYear(), showMonth.getMonth()+1, 1);
+    grid.innerHTML = monthGrid(showMonth) + monthGrid(next);
+    highlight();
+  }
+
+  function highlight(){
+    grid.querySelectorAll('button[data-date]').forEach(b=>{
+      const iso = b.dataset.date;
+      b.classList.remove('range-start','range-end','in-range','bg-gold','text-white');
+      if (iso===selStart) b.classList.add('range-start','bg-gold','text-white');
+      if (iso===selEnd)   b.classList.add('range-end','bg-gold','text-white');
+      if (selStart && selEnd && iso>selStart && iso<selEnd)
+        b.classList.add('in-range','bg-[#F8ECD8]');
+    });
+    document.getElementById('detailSelected').textContent =
+      selStart && selEnd ? `${selStart} – ${selEnd}` : '';
+  }
+
+  grid.addEventListener('click', e=>{
+    const btn = e.target.closest('button[data-date]');
+    if(!btn || btn.disabled) return;
+    const iso = btn.dataset.date;
+    if(!selStart || (selStart && selEnd)){ selStart = iso; selEnd = null; }
+    else if(new Date(iso) >= new Date(selStart)){ selEnd = iso; }
+    else { selStart = iso; selEnd = null; }
+    highlight();
+  });
+
+  document.getElementById('detailClear')?.addEventListener('click', ()=>{
+    selStart = selEnd = null; highlight();
+  });
+
+  render();
+});
