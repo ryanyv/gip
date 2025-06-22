@@ -61,3 +61,5 @@ class UserRegistrationForm(UserCreationForm):
             if field.help_text:
                 auto_id = self.auto_id % self.add_prefix(name)
                 field.widget.attrs.setdefault("data-hover-help", f"{auto_id}_helptext")
+                field.widget.attrs.setdefault("data-help-text", str(field.help_text))
+                field.help_text = ""
