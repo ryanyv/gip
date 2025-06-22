@@ -132,3 +132,6 @@ a:hover, .hover\:text-gold:hover {
   background:#232323 !important;
   color:#fff !important;
 }
+#calendarGrid button.in-range{
+  background:#F7E2BB;
+}

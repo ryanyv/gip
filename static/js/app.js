@@ -69,13 +69,24 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   /* -------------- Who dropdown -------------- */
+  const searchForm   = document.getElementById('searchForm');
+  const qInput       = document.querySelector('input[name="q"]');
   const whoInput     = document.getElementById('whoInput');
   const whoDropdown  = document.getElementById('whoDropdown');
   const whoHidden    = document.getElementById('guestsHidden');
   const whoCounts    = { adults:0, children:0, infants:0, pets:0 };
 
+  let qTimer;
+  qInput?.addEventListener('input', () => {
+    clearTimeout(qTimer);
+    qTimer = setTimeout(() => searchForm?.submit(), 500);
+  });
+
   window.toggleWhoDropdown = function(){
-    if(whoDropdown) whoDropdown.classList.toggle('hidden');
+    if(!whoDropdown) return;
+    const open = !whoDropdown.classList.contains('hidden');
+    whoDropdown.classList.toggle('hidden');
+    if(open) searchForm?.submit();
   }
 
   window.updateWho = function(type, delta){
@@ -93,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const total = whoCounts.adults + whoCounts.children + whoCounts.infants + whoCounts.pets;
       whoHidden.value = total > 0 ? total : '';
     }
+    searchForm?.submit();
   }
 
   // close on click outside
@@ -100,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if(!whoDropdown || !whoInput) return;
     if(!whoDropdown.contains(e.target) && !whoInput.contains(e.target)){
       whoDropdown.classList.add('hidden');
+      searchForm?.submit();
     }
   });
 });
@@ -120,6 +133,13 @@ const calClear       = document.getElementById('calClear');
 let currentMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // first of this month
 let startDate = null;
 let endDate   = null;
+
+if(calDropdown){
+  startDate = calDropdown.dataset.start || null;
+  endDate   = calDropdown.dataset.end || null;
+  if(startDate) checkInInput.value = startDate;
+  if(endDate)   checkOutInput.value = endDate;
+}
 
 /* -------- helpers for calendar ---------- */
 const monthNamesFull = ['January','February','March','April','May','June','July',
@@ -178,9 +198,13 @@ function renderCalendar(){
 
 function highlightSelection(){
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    btn.classList.remove('selected');
-    if(btn.dataset.date===startDate || btn.dataset.date===endDate){
+    btn.classList.remove('selected','in-range');
+    const iso = btn.dataset.date;
+    if(iso===startDate || iso===endDate){
       btn.classList.add('selected');
+    }
+    if(startDate && endDate && new Date(iso) > new Date(startDate) && new Date(iso) < new Date(endDate)){
+      btn.classList.add('in-range');
     }
   });
 }
@@ -202,6 +226,7 @@ calClear?.addEventListener('click',()=>{
   calDropdown.dataset.start='';
   calDropdown.dataset.end='';
   highlightSelection();
+  searchForm?.submit();
 });
 calApply?.addEventListener('click',()=>{
   if(startDate){ checkInInput.value = startDate; }
@@ -209,6 +234,7 @@ calApply?.addEventListener('click',()=>{
   calDropdown.dataset.start=startDate||'';
   calDropdown.dataset.end=endDate||'';
   calDropdown.classList.add('hidden');
+  searchForm?.submit();
 });
 
 // close when clicking outside
@@ -216,5 +242,6 @@ window.addEventListener('click',e=>{
   if(!calDropdown || calDropdown.classList.contains('hidden')) return;
   if(!calDropdown.contains(e.target) && !checkInInput.contains(e.target) && !checkOutInput.contains(e.target)){
     calDropdown.classList.add('hidden');
+    searchForm?.submit();
   }
 });
