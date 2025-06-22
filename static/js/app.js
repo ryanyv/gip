@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function highlight(){
     grid.querySelectorAll('button[data-date]').forEach(b=>{
       const iso = b.dataset.date;
-      b.classList.remove('range-start','range-end','in-range','bg-gold','text-white');
+      b.classList.remove('range-start','range-end','in-range','bg-gold','text-white','bg-[#F8ECD8]');
       if (iso===selStart) b.classList.add('range-start','bg-gold','text-white');
       if (iso===selEnd)   b.classList.add('range-end','bg-gold','text-white');
       if (selStart && selEnd && iso>selStart && iso<selEnd)
