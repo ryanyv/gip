@@ -196,7 +196,7 @@ a:hover, .hover\:text-gold:hover {
   transform:translate(-50%,-50%);
   border-radius:9999px;
   background:#232323;
-  z-index:1;
+  z-index:-1;
 }
 #detailCalendarGrid button.range-start::after,
 #detailCalendarGrid button.range-end::after{
@@ -204,9 +204,9 @@ a:hover, .hover\:text-gold:hover {
   position:absolute;
   top:10px;
   bottom:10px;
-  width:60%;
+  width:50%;
   background:#F7E2BB;
-  z-index:0;
+  z-index:-2;
 }
 #detailCalendarGrid button.range-start::after{ left:50%; }
 #detailCalendarGrid button.range-end::after{ right:50%; }
