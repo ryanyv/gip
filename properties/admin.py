@@ -11,6 +11,7 @@ class PhotoInline(admin.TabularInline):
 class PropertyAdmin(admin.ModelAdmin):
     list_display = (
         'name',
+        'responsible',
         'property_type',
         'location',
         'latitude',

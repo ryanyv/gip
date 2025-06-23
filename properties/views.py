@@ -2,10 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from admin_panel.views import is_admin_or_superadmin
-from .models import Property
+from .models import Property, Booking
 import json
 from datetime import timedelta
-from .models import Booking
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import PropertyForm
 
@@ -98,9 +97,12 @@ def add_property(request):
     if request.method == "POST":
         form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            prop = form.save()
+            if not prop.responsible:
+                prop.responsible = request.user
+                prop.save()
             messages.success(request, "Property added successfully.")
             return redirect('properties:property_list')
     else:
-        form = PropertyForm()
+        form = PropertyForm(initial={"responsible": request.user.pk})
     return render(request, 'properties/add_property.html', {'form': form})

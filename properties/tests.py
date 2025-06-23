@@ -42,7 +42,9 @@ class AddPropertyPermissionTests(TestCase):
         }
         response = self.client.post(reverse("add_property"), data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(Property.objects.filter(name="Test Property").exists())
+        prop = Property.objects.get(name="Test Property")
+        self.assertIsNotNone(prop)
+        self.assertEqual(prop.responsible, self.admin)
 
     def test_admin_can_upload_photos(self):
         self.client.login(username="admin", password="pass")

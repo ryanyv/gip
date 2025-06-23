@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from .models import Property, Facility, Photo
 
 
@@ -30,6 +31,15 @@ class PropertyForm(forms.ModelForm):
         widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
         help_text="Upload one or more photos",
     )
+    responsible = forms.ModelChoiceField(
+        queryset=get_user_model().objects.all(),
+        required=False,
+        widget=forms.Select(
+            attrs={
+                "class": "appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm"
+            }
+        ),
+    )
 
     class Meta:
         model = Property
@@ -47,6 +57,7 @@ class PropertyForm(forms.ModelForm):
             "latitude",
             "longitude",
             "facilities",
+            "responsible",
         ]
         widgets = {
             "name": forms.TextInput(attrs={
