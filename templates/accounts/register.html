@@ -8,13 +8,64 @@
       <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
       <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Register</h2>
     </div>
-    <form method="post" class="space-y-6">
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
       {% if form.non_field_errors %}
         <div class="mb-4 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
           {{ form.non_field_errors }}
         </div>
       {% endif %}
+      <div class="flex justify-center mb-4">
+        <label for="id_profile_photo" class="cursor-pointer inline-block">
+          <img id="profile-preview" src="{% static 'images/logo.jpeg' %}" alt="Profile photo" class="w-24 h-24 rounded-full object-cover border-2 border-gold" />
+        </label>
+        {{ form.profile_photo }}
+        {% for error in form.profile_photo.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_first_name" class="block text-sm font-medium text-gold">First name</label>
+        {{ form.first_name }}
+        {% for error in form.first_name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_last_name" class="block text-sm font-medium text-gold">Last name</label>
+        {{ form.last_name }}
+        {% for error in form.last_name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-gold">Email</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_phone_number" class="block text-sm font-medium text-gold">Phone number</label>
+        {{ form.phone_number }}
+        {% for error in form.phone_number.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_date_of_birth" class="block text-sm font-medium text-gold">Date of birth</label>
+        {{ form.date_of_birth }}
+        {% for error in form.date_of_birth.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_sex" class="block text-sm font-medium text-gold">Sex</label>
+        {{ form.sex }}
+        {% for error in form.sex.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
       <div>
         <label for="id_username" class="block text-sm font-medium text-gold">Username</label>
         {{ form.username }}
@@ -36,6 +87,17 @@
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
+      <div class="flex items-center space-x-2">
+        {{ form.no_commercial_emails }}
+        <label for="id_no_commercial_emails" class="text-sm">I don't want to receive commercial emails</label>
+      </div>
+      <div class="flex items-center space-x-2">
+        {{ form.agree_tos }}
+        <label for="id_agree_tos" class="text-sm">I agree with the Terms of Service</label>
+        {% for error in form.agree_tos.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
       <div>
         <button type="submit"
                 class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">
@@ -50,4 +112,16 @@
     </form>
   </div>
 </div>
+<script>
+  const input = document.getElementById('id_profile_photo');
+  const preview = document.getElementById('profile-preview');
+  if(input && preview){
+    input.addEventListener('change', e => {
+      const [file] = input.files;
+      if(file){
+        preview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+</script>
 {% endblock %}

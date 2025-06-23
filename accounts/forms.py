@@ -24,12 +24,75 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
+    first_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    last_name = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    phone_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    date_of_birth = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    sex = forms.ChoiceField(
+        required=False,
+        choices=User.SEX_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm'
+        }),
+    )
+    profile_photo = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm',
+            'accept': 'image/*'
+        }),
+    )
+    no_commercial_emails = forms.BooleanField(
+        required=False,
+        label="I don't want to receive commercial emails",
+    )
+    agree_tos = forms.BooleanField(
+        required=True,
+        label="I agree with the Terms of Service",
+    )
+
     class Meta:
         model = User
         fields = [
             'username',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'date_of_birth',
+            'sex',
+            'profile_photo',
             'password1',
             'password2',
+            'no_commercial_emails',
+            'agree_tos',
         ]
         widgets = {
             'username': forms.TextInput(attrs={
