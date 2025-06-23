@@ -64,10 +64,9 @@ class RegisterForm(UserCreationForm):
     )
     profile_photo = forms.ImageField(
         required=False,
-        widget=forms.FileInput(attrs={
-            'class': 'appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm',
-            'accept': 'image/*'
-        }),
+        widget=forms.FileInput(
+            attrs={"class": "hidden", "accept": "image/*"}
+        ),
     )
     no_commercial_emails = forms.BooleanField(
         required=False,
@@ -76,6 +75,24 @@ class RegisterForm(UserCreationForm):
     agree_tos = forms.BooleanField(
         required=True,
         label="I agree with the Terms of Service",
+    )
+
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm"
+            }
+        ),
+    )
+
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "appearance-none block w-full px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white focus:outline-none focus:ring-gold focus:border-gold sm:text-sm"
+            }
+        ),
     )
 
     class Meta:

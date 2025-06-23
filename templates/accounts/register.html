@@ -5,7 +5,14 @@
 <div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
     <div class="flex flex-col items-center mb-6">
-      <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
+      <label for="id_profile_photo" class="cursor-pointer inline-block relative group">
+        <img id="profile-preview" src="{% static 'photos/default_profile_image.png' %}" alt="Profile photo" class="w-20 h-20 rounded-full shadow-md mb-2 object-cover border-2 border-gold">
+        <span class="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-50 text-xs text-white opacity-0 group-hover:opacity-100">Change</span>
+      </label>
+      {{ form.profile_photo }}
+      {% for error in form.profile_photo.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+      {% endfor %}
       <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Register</h2>
     </div>
     <form method="post" enctype="multipart/form-data" class="space-y-6">
@@ -15,15 +22,6 @@
           {{ form.non_field_errors }}
         </div>
       {% endif %}
-      <div class="flex justify-center mb-4">
-        <label for="id_profile_photo" class="cursor-pointer inline-block">
-          <img id="profile-preview" src="{% static 'images/logo.jpeg' %}" alt="Profile photo" class="w-24 h-24 rounded-full object-cover border-2 border-gold" />
-        </label>
-        {{ form.profile_photo }}
-        {% for error in form.profile_photo.errors %}
-          <p class="text-red-500 text-sm">{{ error }}</p>
-        {% endfor %}
-      </div>
       <div>
         <label for="id_first_name" class="block text-sm font-medium text-gold">First name</label>
         {{ form.first_name }}
