@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from admin_panel.views import is_admin_or_superadmin
 from .models import Property
 import json
 from datetime import timedelta
@@ -90,6 +92,8 @@ def property_detail(request, pk):
         'reservation_success': reservation_success,
     })
 
+@login_required
+@user_passes_test(is_admin_or_superadmin)
 def add_property(request):
     if request.method == "POST":
         form = PropertyForm(request.POST, request.FILES)
