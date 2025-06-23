@@ -19,6 +19,15 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=USER_ROLES, default='staff')
     position = models.CharField(max_length=100, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    SEX_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+    sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=True, null=True)
+    no_commercial_emails = models.BooleanField(default=False)
+    agreed_tos = models.BooleanField(default=False)
 
     @property
     def profile_photo_url(self):

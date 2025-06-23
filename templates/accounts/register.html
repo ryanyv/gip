@@ -5,22 +5,96 @@
 <div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
     <div class="flex flex-col items-center mb-6">
-      <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="w-20 h-20 rounded-full shadow-md mb-2">
+      <label for="id_profile_photo" class="cursor-pointer inline-block relative group">
+        <img id="profile-preview" src="{% static 'photos/default_profile_image.png' %}" alt="Profile photo" class="w-20 h-20 rounded-full shadow-md mb-2 object-cover border-2 border-gold">
+        <span class="absolute inset-0 flex items-center justify-center rounded-full bg-black bg-opacity-50 text-xs text-white opacity-0 group-hover:opacity-100">Change</span>
+      </label>
+      {{ form.profile_photo }}
+      {% for error in form.profile_photo.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+      {% endfor %}
       <h2 class="mt-2 text-center text-2xl font-extrabold text-gold">Register</h2>
     </div>
-    <form method="post" class="space-y-6">
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="mb-4 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <div>
+        <label for="id_first_name" class="block text-sm font-medium text-gold">First name</label>
+        {{ form.first_name }}
+        {% for error in form.first_name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_last_name" class="block text-sm font-medium text-gold">Last name</label>
+        {{ form.last_name }}
+        {% for error in form.last_name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-gold">Email</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_phone_number" class="block text-sm font-medium text-gold">Phone number</label>
+        {{ form.phone_number }}
+        {% for error in form.phone_number.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_date_of_birth" class="block text-sm font-medium text-gold">Date of birth</label>
+        {{ form.date_of_birth }}
+        {% for error in form.date_of_birth.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_sex" class="block text-sm font-medium text-gold">Sex</label>
+        {{ form.sex }}
+        {% for error in form.sex.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
       <div>
         <label for="id_username" class="block text-sm font-medium text-gold">Username</label>
         {{ form.username }}
+        {% for error in form.username.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_password1" class="block text-sm font-medium text-gold">Password</label>
         {{ form.password1 }}
+        {% for error in form.password1.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_password2" class="block text-sm font-medium text-gold">Confirm Password</label>
         {{ form.password2 }}
+        {% for error in form.password2.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="flex items-center space-x-2">
+        {{ form.no_commercial_emails }}
+        <label for="id_no_commercial_emails" class="text-sm">I don't want to receive commercial emails</label>
+      </div>
+      <div class="flex items-center space-x-2">
+        {{ form.agree_tos }}
+        <label for="id_agree_tos" class="text-sm">I agree with the Terms of Service</label>
+        {% for error in form.agree_tos.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <button type="submit"
@@ -28,7 +102,24 @@
           Register
         </button>
       </div>
+      <div>
+        <a href="{% url 'login' %}"
+           class="w-full flex justify-center py-2 px-4 mt-2 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Log
+          in</a>
+      </div>
     </form>
   </div>
 </div>
+<script>
+  const input = document.getElementById('id_profile_photo');
+  const preview = document.getElementById('profile-preview');
+  if(input && preview){
+    input.addEventListener('change', e => {
+      const [file] = input.files;
+      if(file){
+        preview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+</script>
 {% endblock %}
