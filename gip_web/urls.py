@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('properties/', include('properties.urls', namespace='properties')),
+    path('manage/', include('admin_panel.urls')),
     path('admin-panel/', include('admin_panel.urls')),
     path('accounts/', include('accounts.urls')),
     path('profile/', profile_view, name='profile'),
