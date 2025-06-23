@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from .models import Property
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class AddPropertyPermissionTests(TestCase):
@@ -42,4 +43,23 @@ class AddPropertyPermissionTests(TestCase):
         response = self.client.post(reverse("add_property"), data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Property.objects.filter(name="Test Property").exists())
+
+    def test_admin_can_upload_photos(self):
+        self.client.login(username="admin", password="pass")
+        data = {
+            "name": "Photo Property",
+            "property_type": "short-term",
+            "location": "City",
+            "description": "Pics",
+            "guests": 1,
+            "bedrooms": 1,
+            "bathrooms": 1,
+        }
+        photo = SimpleUploadedFile("test.jpg", b"abc", content_type="image/jpeg")
+        response = self.client.post(
+            reverse("add_property"), {**data, "photos": [photo]}, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        prop = Property.objects.get(name="Photo Property")
+        self.assertTrue(prop.photos.exists())
 
