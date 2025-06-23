@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <!-- Favicon (optional, add your own logo if needed) -->
   <link rel="icon" href="{% static 'images/logo.jpeg' %}">
+  {% block extra_head %}{% endblock %}
 </head>
 <body class="min-h-screen flex flex-col bg-[#232323] text-white">
   <!-- Navbar -->
@@ -27,5 +28,6 @@
 
   <!-- JavaScript -->
   <script src="{% static 'js/app.js' %}"></script>
+  {% block extra_js %}{% endblock %}
 </body>
 </html>

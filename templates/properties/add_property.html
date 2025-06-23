@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-sA+e2oOtZKjW/vobZb2R7tLwDmuXr0K2XdxFttwpItY="
-  crossorigin=""
-/>
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+e2oOtZKjW/vobZb2R7tLwDmuXr0K2XdxFttwpItY=" crossorigin="" />
+{% endblock %}
 {% block content %}
 <div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-2xl w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
@@ -85,11 +83,9 @@
     </form>
   </div>
 </div>
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-o9N1jDwK5K+1K1HZNDeVujk1kqkNf6UtC+npFFo32H0="
-  crossorigin=""
-></script>
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1jDwK5K+1K1HZNDeVujk1kqkNf6UtC+npFFo32H0=" crossorigin=""></script>
 <script>
   const map = L.map('map').setView([0, 0], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -118,5 +114,7 @@
       .catch(() => {});
   }
   map.on('click', e => setLocation(e.latlng));
+  window.addEventListener('load', () => map.invalidateSize());
 </script>
+{% endblock %}
 {% endblock %}
