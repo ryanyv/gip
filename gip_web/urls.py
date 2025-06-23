@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from accounts.views import logout_view, profile_view, edit_profile, register, CustomPasswordChangeView
+from properties.views import add_property
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('register/', register, name='register'),
     path('logout/', logout_view, name='logout'),
+    path('add-property/', add_property, name='add_property'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

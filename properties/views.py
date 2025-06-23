@@ -1,9 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from .models import Property
 import json
 from datetime import timedelta
 from .models import Booking
 from django.core.serializers.json import DjangoJSONEncoder
+from .forms import PropertyForm
 
 def property_list(request):
     filter_type = request.GET.get('type')
@@ -23,7 +25,6 @@ def property_list(request):
 
 def property_detail(request, pk):
     from django.core.mail import send_mail  # Optional: if you want to send emails
-    from django.contrib import messages
     from django.utils import timezone
 
     property = get_object_or_404(Property, pk=pk)
@@ -88,3 +89,14 @@ def property_detail(request, pk):
         'reservation_error': reservation_error,
         'reservation_success': reservation_success,
     })
+
+def add_property(request):
+    if request.method == "POST":
+        form = PropertyForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Property added successfully.")
+            return redirect('properties:property_list')
+    else:
+        form = PropertyForm()
+    return render(request, 'properties/add_property.html', {'form': form})

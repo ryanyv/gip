@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl w-full bg-gip border-2 border-gold p-8 rounded-xl shadow-xl">
+    <h2 class="text-center text-3xl font-extrabold text-gold mb-6">Add Property</h2>
+    {% if messages %}
+      <ul class="mb-4">
+        {% for message in messages %}
+          <li class="text-green-500">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div>
+        <label for="id_name" class="block text-sm font-medium text-gold">Name</label>
+        {{ form.name }}
+      </div>
+      <div>
+        <label for="id_property_type" class="block text-sm font-medium text-gold">Type</label>
+        {{ form.property_type }}
+      </div>
+      <div>
+        <label for="id_location" class="block text-sm font-medium text-gold">Location</label>
+        {{ form.location }}
+      </div>
+      <div>
+        <label for="id_description" class="block text-sm font-medium text-gold">Description</label>
+        {{ form.description }}
+      </div>
+      <div>
+        <label for="id_address" class="block text-sm font-medium text-gold">Address</label>
+        {{ form.address }}
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="id_guests" class="block text-sm font-medium text-gold">Guests</label>
+          {{ form.guests }}
+        </div>
+        <div>
+          <label for="id_bedrooms" class="block text-sm font-medium text-gold">Bedrooms</label>
+          {{ form.bedrooms }}
+        </div>
+        <div>
+          <label for="id_bathrooms" class="block text-sm font-medium text-gold">Bathrooms</label>
+          {{ form.bathrooms }}
+        </div>
+        <div>
+          <label for="id_area" class="block text-sm font-medium text-gold">Area (m²)</label>
+          {{ form.area }}
+        </div>
+        <div>
+          <label for="id_price_per_night" class="block text-sm font-medium text-gold">Price/Night</label>
+          {{ form.price_per_night }}
+        </div>
+        <div>
+          <label for="id_latitude" class="block text-sm font-medium text-gold">Latitude</label>
+          {{ form.latitude }}
+        </div>
+        <div>
+          <label for="id_longitude" class="block text-sm font-medium text-gold">Longitude</label>
+          {{ form.longitude }}
+        </div>
+      </div>
+      <div>
+        <span class="block text-sm font-medium text-gold mb-1">Facilities</span>
+        {{ form.facilities }}
+      </div>
+      <div>
+        <label for="id_photos" class="block text-sm font-medium text-gold">Photos</label>
+        {{ form.photos }}
+      </div>
+      <div>
+        <button type="submit" class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
