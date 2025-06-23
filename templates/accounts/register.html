@@ -10,23 +10,42 @@
     </div>
     <form method="post" class="space-y-6">
       {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="mb-4 text-red-600 bg-red-50 border border-red-200 rounded p-2 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
       <div>
         <label for="id_username" class="block text-sm font-medium text-gold">Username</label>
         {{ form.username }}
+        {% for error in form.username.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_password1" class="block text-sm font-medium text-gold">Password</label>
         {{ form.password1 }}
+        {% for error in form.password1.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_password2" class="block text-sm font-medium text-gold">Confirm Password</label>
         {{ form.password2 }}
+        {% for error in form.password2.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <button type="submit"
                 class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">
           Register
         </button>
+      </div>
+      <div>
+        <a href="{% url 'login' %}"
+           class="w-full flex justify-center py-2 px-4 mt-2 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Log
+          in</a>
       </div>
     </form>
   </div>
