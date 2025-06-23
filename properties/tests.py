@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from .models import Property
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -64,4 +65,16 @@ class AddPropertyPermissionTests(TestCase):
         self.assertEqual(response.status_code, 200)
         prop = Property.objects.get(name="Photo Property")
         self.assertTrue(prop.photos.exists())
+
+    def test_responsible_field_hidden_without_permission(self):
+        self.client.login(username="admin", password="pass")
+        response = self.client.get(reverse("add_property"))
+        self.assertNotContains(response, "id_responsible")
+
+    def test_responsible_field_visible_with_permission(self):
+        permission = Permission.objects.get(codename="assign_responsible")
+        self.admin.user_permissions.add(permission)
+        self.client.login(username="admin", password="pass")
+        response = self.client.get(reverse("add_property"))
+        self.assertContains(response, "id_responsible")
 

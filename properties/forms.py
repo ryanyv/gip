@@ -41,6 +41,15 @@ class PropertyForm(forms.ModelForm):
         ),
     )
 
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None and not (
+            user.is_superuser
+            or getattr(user, "is_superadmin", False)
+            or user.has_perm("properties.assign_responsible")
+        ):
+            self.fields.pop("responsible")
+
     class Meta:
         model = Property
         fields = [

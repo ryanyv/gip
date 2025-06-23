@@ -47,6 +47,11 @@ class Property(models.Model):
         related_name="responsible_properties",
     )
 
+    class Meta:
+        permissions = [
+            ("assign_responsible", "Can assign responsible user to property"),
+        ]
+
     def __str__(self):
         return self.name
 

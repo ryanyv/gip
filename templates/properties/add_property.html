@@ -112,6 +112,7 @@
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
+      {% if show_responsible %}
       <div>
         <label for="id_responsible" class="block text-sm font-medium text-gold">Responsible</label>
         {{ form.responsible }}
@@ -119,6 +120,7 @@
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
+      {% endif %}
       <div>
         <label for="id_photos" class="block text-sm font-medium text-gold">Photos</label>
         {{ form.photos }}

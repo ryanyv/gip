@@ -94,8 +94,13 @@ def property_detail(request, pk):
 @login_required
 @user_passes_test(is_admin_or_superadmin)
 def add_property(request):
+    show_responsible = (
+        request.user.is_superuser
+        or getattr(request.user, "is_superadmin", False)
+        or request.user.has_perm("properties.assign_responsible")
+    )
     if request.method == "POST":
-        form = PropertyForm(request.POST, request.FILES)
+        form = PropertyForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             prop = form.save()
             if not prop.responsible:
@@ -104,5 +109,5 @@ def add_property(request):
             messages.success(request, "Property added successfully.")
             return redirect('properties:property_list')
     else:
-        form = PropertyForm(initial={"responsible": request.user.pk})
-    return render(request, 'properties/add_property.html', {'form': form})
+        form = PropertyForm(initial={"responsible": request.user.pk}, user=request.user)
+    return render(request, 'properties/add_property.html', {'form': form, 'show_responsible': show_responsible})
