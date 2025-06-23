@@ -21,61 +21,103 @@
       <div>
         <label for="id_name" class="block text-sm font-medium text-gold">Name</label>
         {{ form.name }}
+        {% for error in form.name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_property_type" class="block text-sm font-medium text-gold">Type</label>
         {{ form.property_type }}
+        {% for error in form.property_type.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_location" class="block text-sm font-medium text-gold">Location</label>
         {{ form.location }}
+        {% for error in form.location.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_description" class="block text-sm font-medium text-gold">Description</label>
         {{ form.description }}
+        {% for error in form.description.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_address" class="block text-sm font-medium text-gold">Address</label>
         {{ form.address }}
+        {% for error in form.address.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div id="map" class="w-full h-64 rounded-md border border-gold mb-4"></div>
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label for="id_guests" class="block text-sm font-medium text-gold">Guests</label>
           {{ form.guests }}
+          {% for error in form.guests.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_bedrooms" class="block text-sm font-medium text-gold">Bedrooms</label>
           {{ form.bedrooms }}
+          {% for error in form.bedrooms.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_bathrooms" class="block text-sm font-medium text-gold">Bathrooms</label>
           {{ form.bathrooms }}
+          {% for error in form.bathrooms.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_area" class="block text-sm font-medium text-gold">Area (m²)</label>
           {{ form.area }}
+          {% for error in form.area.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_price_per_night" class="block text-sm font-medium text-gold">Price/Night</label>
           {{ form.price_per_night }}
+          {% for error in form.price_per_night.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_latitude" class="block text-sm font-medium text-gold">Latitude</label>
           {{ form.latitude }}
+          {% for error in form.latitude.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
         <div>
           <label for="id_longitude" class="block text-sm font-medium text-gold">Longitude</label>
           {{ form.longitude }}
+          {% for error in form.longitude.errors %}
+            <p class="text-red-500 text-sm">{{ error }}</p>
+          {% endfor %}
         </div>
       </div>
       <div>
         <span class="block text-sm font-medium text-gold mb-1">Facilities</span>
         {{ form.facilities }}
+        {% for error in form.facilities.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <label for="id_photos" class="block text-sm font-medium text-gold">Photos</label>
         {{ form.photos }}
+        {% for error in form.photos.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
       </div>
       <div>
         <button type="submit" class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Save</button>
