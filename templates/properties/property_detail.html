@@ -65,11 +65,11 @@
         </div>
       </div>
 
-      {% if property.facilities.exists %}
+      {% if property.amenities.exists %}
         <div class="mb-4">
-          <h2 class="text-lg font-semibold text-gold mb-2">Facilities & Features</h2>
+          <h2 class="text-lg font-semibold text-gold mb-2">Amenities & Features</h2>
           <ul class="flex flex-wrap gap-3">
-            {% for facility in property.facilities.all %}
+            {% for facility in property.amenities.all %}
               <li class="px-3 py-1 bg-[#FFF6E8] text-[#232323] rounded-full border border-gold text-sm">{{ facility.name }}</li>
             {% endfor %}
           </ul>

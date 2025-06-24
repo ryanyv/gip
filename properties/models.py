@@ -35,7 +35,11 @@ class Property(models.Model):
         null=True,
         help_text="Longitude in decimal degrees",
     )
-    facilities = models.ManyToManyField(Facility, related_name='properties', blank=True)
+    amenities = models.ManyToManyField(
+        Facility,
+        related_name="properties",
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_featured = models.BooleanField(default=False)

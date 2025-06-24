@@ -24,7 +24,7 @@ class PropertyAdmin(admin.ModelAdmin):
     list_filter = ('property_type', 'is_featured', 'guests')
     search_fields = ('name', 'location')
     inlines = [PhotoInline]
-    filter_horizontal = ('facilities',)
+    filter_horizontal = ('amenities',)
 
 @admin.register(Facility)
 class FacilityAdmin(admin.ModelAdmin):
