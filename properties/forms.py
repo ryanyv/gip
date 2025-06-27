@@ -31,6 +31,7 @@ class PropertyForm(forms.ModelForm):
         widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
         help_text="Upload one or more photos",
     )
+    photo_order = forms.CharField(widget=forms.HiddenInput(), required=False)
     responsible = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
         required=False,
@@ -110,7 +111,13 @@ class PropertyForm(forms.ModelForm):
     def save(self, commit=True):
         property_obj = super().save(commit)
         photos = self.cleaned_data.get("photos", [])
+        order_str = self.cleaned_data.get("photo_order", "")
+        order_list = [int(i) for i in order_str.split(",") if i.isdigit()]
+        if order_list and len(order_list) == len(photos):
+            ordered_photos = [photos[i] for i in order_list if i < len(photos)]
+        else:
+            ordered_photos = photos
         if commit:
-            for order, image in enumerate(photos):
+            for order, image in enumerate(ordered_photos):
                 Photo.objects.create(property=property_obj, image=image, order=order)
         return property_obj
