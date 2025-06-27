@@ -33,16 +33,17 @@
         {% endfor %}
       </div>
       <div>
-        <label for="id_location" class="block text-sm font-medium text-gold">Location</label>
-        {{ form.location }}
-        {% for error in form.location.errors %}
-          <p class="text-red-500 text-sm">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div>
         <label for="id_description" class="block text-sm font-medium text-gold">Description</label>
         {{ form.description }}
         {% for error in form.description.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div id="map" class="w-full h-64 rounded-md border border-gold mb-4"></div>
+      <div>
+        <label for="id_location" class="block text-sm font-medium text-gold">Location</label>
+        {{ form.location }}
+        {% for error in form.location.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
@@ -52,8 +53,9 @@
         {% for error in form.address.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
+        {{ form.latitude }}
+        {{ form.longitude }}
       </div>
-      <div id="map" class="w-full h-64 rounded-md border border-gold mb-4"></div>
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label for="id_guests" class="block text-sm font-medium text-gold">Guests</label>
@@ -90,24 +92,14 @@
             <p class="text-red-500 text-sm">{{ error }}</p>
           {% endfor %}
         </div>
-        <div>
-          <label for="id_latitude" class="block text-sm font-medium text-gold">Latitude</label>
-          {{ form.latitude }}
-          {% for error in form.latitude.errors %}
-            <p class="text-red-500 text-sm">{{ error }}</p>
-          {% endfor %}
-        </div>
-        <div>
-          <label for="id_longitude" class="block text-sm font-medium text-gold">Longitude</label>
-          {{ form.longitude }}
-          {% for error in form.longitude.errors %}
-            <p class="text-red-500 text-sm">{{ error }}</p>
-          {% endfor %}
-        </div>
       </div>
-      <div>
+      <div class="relative">
         <span class="block text-sm font-medium text-gold mb-1">Facilities</span>
-        {{ form.facilities }}
+        <button id="facilitiesButton" type="button" class="w-full flex justify-between items-center px-3 py-2 bg-[#1f1f1f] border border-gold rounded-md text-white">Select facilities</button>
+        <div id="facilitiesDropdown" class="absolute left-0 right-0 bg-[#1f1f1f] border border-gold rounded-md p-2 mt-1 max-h-60 overflow-y-auto hidden z-10">
+          {{ form.facilities }}
+        </div>
+        <div id="selectedFacilities" class="flex flex-wrap gap-2 mt-2"></div>
         {% for error in form.facilities.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
@@ -138,7 +130,7 @@
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
-  const map = L.map('map').setView([0, 0], 2);
+  const map = L.map('map').setView([36.7213, -4.4217], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
@@ -165,7 +157,39 @@
       .catch(() => {});
   }
   map.on('click', e => setLocation(e.latlng));
-  window.addEventListener('load', () => map.invalidateSize());
+  window.addEventListener('load', () => {
+    map.invalidateSize();
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        map.setView([here.lat, here.lng], 13);
+        setLocation(here);
+      });
+    }
+  });
+
+  const facBtn = document.getElementById('facilitiesButton');
+  const facDrop = document.getElementById('facilitiesDropdown');
+  const facSel  = document.getElementById('selectedFacilities');
+  function updateFacilities(){
+    facSel.innerHTML = '';
+    facDrop.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      const label = facDrop.querySelector(`label[for="${cb.id}"]`);
+      const name = label ? label.textContent.trim() : cb.value;
+      const span = document.createElement('span');
+      span.className = 'px-2 py-1 bg-[#FFF6E8] text-[#232323] rounded-md border border-gold text-xs';
+      span.textContent = name;
+      facSel.appendChild(span);
+    });
+  }
+  facBtn?.addEventListener('click', () => facDrop.classList.toggle('hidden'));
+  facDrop?.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateFacilities));
+  window.addEventListener('click', e => {
+    if (!facDrop.contains(e.target) && e.target !== facBtn) {
+      facDrop.classList.add('hidden');
+    }
+  });
+  updateFacilities();
 </script>
 {% endblock %}
 {% endblock %}
