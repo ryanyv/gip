@@ -232,3 +232,15 @@ a:hover, .hover\:text-gold:hover {
   backdrop-filter:blur(6px);
   box-shadow:0 0 0 2px rgba(228,177,101,0.6);
 }
+
+/* ------- Add property photo gallery ------- */
+#photoCollage img,
+#photoModalGallery img{
+  cursor: move;
+}
+#photoModal{
+  display: none;
+}
+#photoModal:not(.hidden){
+  display: flex;
+}

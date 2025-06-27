@@ -28,7 +28,12 @@ class MultiFileField(forms.FileField):
 class PropertyForm(forms.ModelForm):
     photos = MultiFileField(
         required=False,
-        widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
+        widget=MultiFileInput(
+            attrs={
+                "class": "hidden",  # will be triggered by custom button
+                "id": "photoInput",
+            }
+        ),
         help_text="Upload one or more photos",
     )
     responsible = forms.ModelChoiceField(

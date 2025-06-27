@@ -114,8 +114,10 @@
       </div>
       {% endif %}
       <div>
-        <label for="id_photos" class="block text-sm font-medium text-gold">Photos</label>
+        <label for="photoInput" class="block text-sm font-medium text-gold">Photos</label>
         {{ form.photos }}
+        <button id="addPhotosBtn" type="button" class="mt-2 button-gold">Add Photos</button>
+        <div id="photoCollage" class="grid grid-cols-4 gap-2 mt-2"></div>
         {% for error in form.photos.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
@@ -123,7 +125,16 @@
       <div>
         <button type="submit" class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Save</button>
       </div>
+
     </form>
+  </div>
+</div>
+
+<!-- Expanded photo modal -->
+<div id="photoModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-4">
+  <div class="bg-[#1f1f1f] border border-gold rounded-xl p-4 max-w-4xl w-full relative">
+    <button id="closePhotoModal" type="button" class="absolute top-2 right-3 text-3xl leading-none text-gold">&times;</button>
+    <div id="photoModalGallery" class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6"></div>
   </div>
 </div>
 
@@ -190,6 +201,75 @@
     }
   });
   updateFacilities();
+
+  /* -------- Photo gallery & ordering -------- */
+  const addBtn = document.getElementById('addPhotosBtn');
+  const photoInput = document.getElementById('photoInput');
+  const photoCollage = document.getElementById('photoCollage');
+  const photoModal = document.getElementById('photoModal');
+  const photoModalGallery = document.getElementById('photoModalGallery');
+  const closePhotoModal = document.getElementById('closePhotoModal');
+  const selectedPhotos = [];
+
+  function addDragHandlers(el){
+    el.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', el.dataset.index);
+    });
+    el.addEventListener('dragover', e => e.preventDefault());
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      const from = parseInt(e.dataTransfer.getData('text/plain'));
+      const to = parseInt(el.dataset.index);
+      if (from === to) return;
+      const [moved] = selectedPhotos.splice(from, 1);
+      selectedPhotos.splice(to, 0, moved);
+      renderPhotos();
+    });
+  }
+
+  function updateFileInput(){
+    const dt = new DataTransfer();
+    selectedPhotos.forEach(f => dt.items.add(f));
+    photoInput.files = dt.files;
+  }
+
+  function renderPhotos(){
+    photoCollage.innerHTML = '';
+    photoModalGallery.innerHTML = '';
+    selectedPhotos.forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      const thumb = document.createElement('img');
+      thumb.src = url;
+      thumb.draggable = true;
+      thumb.dataset.index = idx;
+      thumb.className = 'w-20 h-20 object-cover rounded border border-gold';
+      addDragHandlers(thumb);
+      photoCollage.appendChild(thumb);
+
+      const big = document.createElement('img');
+      big.src = url;
+      big.draggable = true;
+      big.dataset.index = idx;
+      big.className = 'w-full h-48 object-cover rounded border border-gold';
+      addDragHandlers(big);
+      photoModalGallery.appendChild(big);
+    });
+    updateFileInput();
+  }
+
+  addBtn?.addEventListener('click', () => photoInput.click());
+  photoInput?.addEventListener('change', () => {
+    for (const file of photoInput.files){ selectedPhotos.push(file); }
+    renderPhotos();
+  });
+
+  photoCollage?.addEventListener('click', () => {
+    if(selectedPhotos.length){ photoModal.classList.remove('hidden'); }
+  });
+  closePhotoModal?.addEventListener('click', () => photoModal.classList.add('hidden'));
+  photoModal?.addEventListener('click', e => {
+    if(e.target === photoModal) photoModal.classList.add('hidden');
+  });
 </script>
 {% endblock %}
 {% endblock %}
