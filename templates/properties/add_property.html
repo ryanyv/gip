@@ -3,6 +3,8 @@
 
 {% block extra_head %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<style>#id_photos{display:none;}</style>
 {% endblock %}
 {% block content %}
 <div class="min-h-screen flex items-start justify-center pt-12 px-4 sm:px-6 lg:px-8">
@@ -114,8 +116,10 @@
       </div>
       {% endif %}
       <div>
-        <label for="id_photos" class="block text-sm font-medium text-gold">Photos</label>
+        <label class="block text-sm font-medium text-gold mb-1">Photos</label>
         {{ form.photos }}
+        <button id="addPhotosBtn" type="button" class="button-gold text-[#232323] mb-2">Add Photos</button>
+        <div id="photoGallery" class="grid grid-cols-3 gap-2"></div>
         {% for error in form.photos.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
@@ -124,6 +128,14 @@
         <button type="submit" class="w-full flex justify-center py-2 px-4 button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg focus:outline-none">Save</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Modal gallery -->
+<div id="photoModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+  <div class="max-w-3xl w-full p-4">
+    <button id="photoModalClose" type="button" class="text-white text-2xl mb-4">&times;</button>
+    <div id="photoModalGallery" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
   </div>
 </div>
 

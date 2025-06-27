@@ -357,3 +357,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
   render();
 });
+
+// --------- Photo upload & gallery for add property ---------
+document.addEventListener('DOMContentLoaded', () => {
+  const input  = document.getElementById('id_photos');
+  const addBtn = document.getElementById('addPhotosBtn');
+  const gallery = document.getElementById('photoGallery');
+  const modal   = document.getElementById('photoModal');
+  const closeBtn= document.getElementById('photoModalClose');
+  const modalGal= document.getElementById('photoModalGallery');
+  if(!input || !addBtn || !gallery) return;        // not on add property page
+
+  let files = [];
+
+  addBtn.addEventListener('click', () => input.click());
+
+  input.addEventListener('change', e => {
+    files = files.concat([...e.target.files]);
+    render();
+    syncInput();
+  });
+
+  function syncInput(){
+    const dt = new DataTransfer();
+    files.forEach(f => dt.items.add(f));
+    input.files = dt.files;
+  }
+
+  function thumb(url, cls){
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = cls;
+    return img;
+  }
+
+  function render(){
+    gallery.innerHTML = '';
+    files.forEach((f,i)=>{
+      const url = URL.createObjectURL(f);
+      const img = thumb(url,'w-full h-24 object-cover rounded cursor-pointer');
+      img.dataset.index=i;
+      gallery.appendChild(img);
+      img.addEventListener('click',openModal);
+      img.onload=()=>URL.revokeObjectURL(url);
+    });
+
+    modalGal.innerHTML='';
+    files.forEach((f,i)=>{
+      const url = URL.createObjectURL(f);
+      const img = thumb(url,'w-full h-48 object-cover rounded');
+      img.dataset.index=i;
+      modalGal.appendChild(img);
+      img.onload=()=>URL.revokeObjectURL(url);
+    });
+  }
+
+  function openModal(){ modal.classList.remove('hidden'); }
+  function closeModal(){ modal.classList.add('hidden'); }
+
+  closeBtn?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+
+  new Sortable(modalGal, {
+    animation:150,
+    onSort:()=>{
+      files = Array.from(modalGal.children).map(el=>files[parseInt(el.dataset.index)]);
+      render();
+      syncInput();
+    }
+  });
+});
