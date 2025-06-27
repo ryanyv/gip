@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="bg-[#232323] rounded-3xl shadow-xl mb-16 p-8 text-center">
+  <h1 class="text-4xl font-extrabold text-gold mb-4">Contact Us</h1>
+  <p class="text-secondary mb-8">We would love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+  {% if success %}
+    <div class="bg-green-600 text-white p-4 rounded mb-6">Thank you for contacting us!</div>
+  {% endif %}
+  <form method="post" class="max-w-xl mx-auto space-y-4 text-left">
+    {% csrf_token %}
+    <div>
+      <label for="id_name" class="block text-sm font-medium text-gold">Name</label>
+      {{ form.name }}
+      {% for error in form.name.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div>
+      <label for="id_email" class="block text-sm font-medium text-gold">Email</label>
+      {{ form.email }}
+      {% for error in form.email.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div>
+      <label for="id_message" class="block text-sm font-medium text-gold">Message</label>
+      {{ form.message }}
+      {% for error in form.message.errors %}
+        <p class="text-red-500 text-sm">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="text-center">
+      <button type="submit" class="button-gold text-[#232323] shadow-lg">Send Message</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+
