@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import os
 
 PROPERTY_TYPE_CHOICES = [
     ('short-term', 'Short-Term Rental'),
@@ -12,6 +13,8 @@ class Facility(models.Model):
 
     def __str__(self):
         return self.name
+
+
 
 class Property(models.Model):
     name = models.CharField(max_length=255)
@@ -55,6 +58,13 @@ class Property(models.Model):
     def __str__(self):
         return self.name
 
+    def delete(self, *args, **kwargs):
+        for photo in self.photos.all():
+            photo.delete()
+        for video in self.videos.all():
+            video.delete()
+        super().delete(*args, **kwargs)
+
 class Photo(models.Model):
     property = models.ForeignKey(Property, related_name='photos', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='property_photos/')
@@ -66,6 +76,32 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"{self.property.name} Photo #{self.order}"
+
+    def delete(self, *args, **kwargs):
+        # Remove the file from storage when the Photo object is deleted
+        storage, path = self.image.storage, self.image.path
+        super().delete(*args, **kwargs)
+        if path and os.path.exists(path):
+            storage.delete(path)
+
+
+class Video(models.Model):
+    property = models.ForeignKey(Property, related_name="videos", on_delete=models.CASCADE)
+    file = models.FileField(upload_to="property_videos/")
+    order = models.PositiveIntegerField(default=0)
+    caption = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.property.name} Video #{self.order}"
+
+    def delete(self, *args, **kwargs):
+        storage, path = self.file.storage, self.file.path
+        super().delete(*args, **kwargs)
+        if path and os.path.exists(path):
+            storage.delete(path)
 
 class Booking(models.Model):
     property = models.ForeignKey(Property, related_name='bookings', on_delete=models.CASCADE)

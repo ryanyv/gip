@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from .models import Property
+import os
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
@@ -58,7 +59,11 @@ class AddPropertyPermissionTests(TestCase):
             "bedrooms": 1,
             "bathrooms": 1,
         }
-        photo = SimpleUploadedFile("test.jpg", b"abc", content_type="image/jpeg")
+        from PIL import Image
+        from io import BytesIO
+        buffer = BytesIO()
+        Image.new("RGB", (1, 1)).save(buffer, format="JPEG")
+        photo = SimpleUploadedFile("test.jpg", buffer.getvalue(), content_type="image/jpeg")
         response = self.client.post(
             reverse("add_property"), {**data, "photos": [photo]}, follow=True
         )
@@ -77,4 +82,24 @@ class AddPropertyPermissionTests(TestCase):
         self.client.login(username="admin", password="pass")
         response = self.client.get(reverse("add_property"))
         self.assertContains(response, "id_responsible")
+
+    def test_property_delete_removes_photos(self):
+        self.client.login(username="admin", password="pass")
+        prop = Property.objects.create(
+            name="Del Prop",
+            property_type="short-term",
+            location="x",
+            description="d",
+            responsible=self.admin,
+        )
+        from PIL import Image
+        from io import BytesIO
+        buffer = BytesIO()
+        Image.new("RGB", (1, 1)).save(buffer, format="JPEG")
+        photo = SimpleUploadedFile("del.jpg", buffer.getvalue(), content_type="image/jpeg")
+        prop.photos.create(image=photo, order=0)
+        path = prop.photos.first().image.path
+        self.assertTrue(os.path.exists(path))
+        prop.delete()
+        self.assertFalse(os.path.exists(path))
 

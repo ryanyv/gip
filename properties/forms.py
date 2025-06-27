@@ -1,6 +1,13 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Property, Facility, Photo
+from django.core.files import File
+from django.utils.text import slugify
+from PIL import Image
+from io import BytesIO
+import os
+import subprocess
+import tempfile
+from .models import Property, Facility, Photo, Video
 
 
 class MultiFileInput(forms.ClearableFileInput):
@@ -30,6 +37,11 @@ class PropertyForm(forms.ModelForm):
         required=False,
         widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
         help_text="Upload one or more photos",
+    )
+    videos = MultiFileField(
+        required=False,
+        widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
+        help_text="Upload one or more videos",
     )
     responsible = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
@@ -110,7 +122,50 @@ class PropertyForm(forms.ModelForm):
     def save(self, commit=True):
         property_obj = super().save(commit)
         photos = self.cleaned_data.get("photos", [])
+        videos = self.cleaned_data.get("videos", [])
+        slug = slugify(property_obj.name or str(property_obj.pk))
+
         if commit:
-            for order, image in enumerate(photos):
-                Photo.objects.create(property=property_obj, image=image, order=order)
+            for order, image_file in enumerate(photos):
+                img = Image.open(image_file)
+                img.thumbnail((1280, 1280))
+                buffer = BytesIO()
+                img.save(buffer, format="JPEG", quality=80)
+                buffer.seek(0)
+                filename = f"{slug}-{order+1}.jpg"
+                django_file = File(buffer, name=filename)
+                Photo.objects.create(property=property_obj, image=django_file, order=order)
+
+            for order, video_file in enumerate(videos):
+                orig_ext = os.path.splitext(video_file.name)[1] or ".mp4"
+                temp_in = tempfile.NamedTemporaryFile(delete=False, suffix=orig_ext)
+                for chunk in video_file.chunks():
+                    temp_in.write(chunk)
+                temp_in.flush()
+                temp_out = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+                temp_out.close()
+                cmd = [
+                    "ffmpeg",
+                    "-i",
+                    temp_in.name,
+                    "-vf",
+                    "scale='min(1920,iw)':min(1080,ih)",
+                    "-c:v",
+                    "libx264",
+                    "-preset",
+                    "fast",
+                    "-crf",
+                    "23",
+                    "-c:a",
+                    "aac",
+                    temp_out.name,
+                ]
+                try:
+                    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    with open(temp_out.name, "rb") as f:
+                        django_file = File(f, name=f"{slug}-video-{order+1}.mp4")
+                        Video.objects.create(property=property_obj, file=django_file, order=order)
+                finally:
+                    os.remove(temp_in.name)
+                    os.remove(temp_out.name)
         return property_obj
