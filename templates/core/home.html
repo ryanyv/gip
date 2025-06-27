@@ -19,51 +19,28 @@
 <section class="max-w-7xl mx-auto mt-16">
   <h2 class="text-3xl font-bold text-gold mb-10 text-center">Featured Properties</h2>
   <div class="grid gap-8 md:grid-cols-3">
-    <!-- Property Card 1 -->
-    <div class="bg-white rounded-2xl shadow-lg border-2 border-gold hover:shadow-2xl transition overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=600&q=80" alt="Modern Villa" class="w-full h-56 object-cover">
-      <div class="p-6">
-        <h3 class="text-xl font-semibold text-gold mb-1">Modern Seaside Villa</h3>
-        <p class="text-[#232323] font-medium mb-2">Marbella</p>
-        <p class="text-gray-700 text-sm mb-4">Stunning 5-bedroom villa with pool, sea views, and direct beach access.</p>
-        <div class="flex items-center gap-3 mb-2 text-gray-800 text-xs font-semibold">
-          <span>5 Beds</span>
-          <span>4 Baths</span>
-          <span>3,200 m²</span>
+    {% for property in featured_properties %}
+      <div class="bg-white rounded-2xl shadow-lg border-2 border-gold hover:shadow-2xl transition overflow-hidden">
+        {% if property.photos.first %}
+          <img src="{{ property.photos.first.image.url }}" alt="{{ property.name }}" class="w-full h-56 object-cover">
+        {% else %}
+          <div class="w-full h-56 flex items-center justify-center bg-[#EEE8DC] text-gold font-bold text-3xl">No Photo</div>
+        {% endif %}
+        <div class="p-6">
+          <h3 class="text-xl font-semibold text-gold mb-1">{{ property.name }}</h3>
+          <p class="text-[#232323] font-medium mb-2">{{ property.location }}</p>
+          <p class="text-gray-700 text-sm mb-4 line-clamp-2">{{ property.description }}</p>
+          <div class="flex items-center gap-3 mb-2 text-gray-800 text-xs font-semibold">
+            <span>{{ property.bedrooms }} Beds</span>
+            <span>{{ property.bathrooms }} Baths</span>
+            {% if property.area %}<span>{{ property.area }} m²</span>{% endif %}
+          </div>
+          <a href="{% url 'properties:property_detail' property.pk %}" class="block button-gold text-center py-2 rounded-lg mt-2 font-bold text-[#232323]">View Details</a>
         </div>
-        <a href="/properties/1/" class="block button-gold text-center py-2 rounded-lg mt-2 font-bold text-[#232323]">View Details</a>
       </div>
-    </div>
-    <!-- Property Card 2 -->
-    <div class="bg-white rounded-2xl shadow-lg border-2 border-gold hover:shadow-2xl transition overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" alt="City Apartment" class="w-full h-56 object-cover">
-      <div class="p-6">
-        <h3 class="text-xl font-semibold text-gold mb-1">Elegant City Apartment</h3>
-        <p class="text-[#232323] font-medium mb-2">Málaga Centro</p>
-        <p class="text-gray-700 text-sm mb-4">Bright 2-bedroom apartment in the heart of Málaga, perfect for long-term stays or investment.</p>
-        <div class="flex items-center gap-3 mb-2 text-gray-800 text-xs font-semibold">
-          <span>2 Beds</span>
-          <span>2 Baths</span>
-          <span>110 m²</span>
-        </div>
-        <a href="/properties/2/" class="block button-gold text-center py-2 rounded-lg mt-2 font-bold text-[#232323]">View Details</a>
-      </div>
-    </div>
-    <!-- Property Card 3 -->
-    <div class="bg-white rounded-2xl shadow-lg border-2 border-gold hover:shadow-2xl transition overflow-hidden">
-      <img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=600&q=80" alt="Coastal Penthouse" class="w-full h-56 object-cover">
-      <div class="p-6">
-        <h3 class="text-xl font-semibold text-gold mb-1">Luxury Coastal Penthouse</h3>
-        <p class="text-[#232323] font-medium mb-2">Estepona</p>
-        <p class="text-gray-700 text-sm mb-4">Penthouse with panoramic sea views, private rooftop terrace, and 24/7 security.</p>
-        <div class="flex items-center gap-3 mb-2 text-gray-800 text-xs font-semibold">
-          <span>3 Beds</span>
-          <span>3 Baths</span>
-          <span>200 m²</span>
-        </div>
-        <a href="/properties/3/" class="block button-gold text-center py-2 rounded-lg mt-2 font-bold text-[#232323]">View Details</a>
-      </div>
-    </div>
+    {% empty %}
+      <div class="col-span-full text-center text-gray-400 py-20">No properties available.</div>
+    {% endfor %}
   </div>
 </section>
 
