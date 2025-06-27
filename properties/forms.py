@@ -1,6 +1,13 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Property, Facility, Photo
+from django.utils.text import slugify
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+from io import BytesIO
+import os
+import tempfile
+from moviepy import VideoFileClip
 
 
 class MultiFileInput(forms.ClearableFileInput):
@@ -31,6 +38,7 @@ class PropertyForm(forms.ModelForm):
         widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
         help_text="Upload one or more photos",
     )
+    video = forms.FileField(required=False)
     responsible = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
         required=False,
@@ -63,6 +71,7 @@ class PropertyForm(forms.ModelForm):
             "bathrooms",
             "area",
             "price_per_night",
+            "video",
             "latitude",
             "longitude",
             "facilities",
@@ -110,7 +119,60 @@ class PropertyForm(forms.ModelForm):
     def save(self, commit=True):
         property_obj = super().save(commit)
         photos = self.cleaned_data.get("photos", [])
+        video = self.cleaned_data.get("video")
+
         if commit:
-            for order, image in enumerate(photos):
-                Photo.objects.create(property=property_obj, image=image, order=order)
+            slug = slugify(property_obj.name) or f"property_{property_obj.pk}"
+
+            if video:
+                processed_video = self._process_video(video, slug)
+                property_obj.video = processed_video
+                property_obj.save(update_fields=["video"])
+
+            for order, image in enumerate(photos, start=1):
+                processed_image = self._process_image(image, slug, order)
+                Photo.objects.create(property=property_obj, image=processed_image, order=order)
+
         return property_obj
+
+    def _process_image(self, uploaded_file, slug, index):
+        try:
+            uploaded_file.seek(0)
+            img = Image.open(uploaded_file)
+            img.thumbnail((1600, 1600))
+            buffer = BytesIO()
+            format_ = img.format or "JPEG"
+            img.save(buffer, format=format_, optimize=True, quality=75)
+            buffer.seek(0)
+            ext = "jpg" if format_.lower() == "jpeg" else format_.lower()
+            file_name = f"{slug}_{index}.{ext}"
+            return InMemoryUploadedFile(buffer, None, file_name, f"image/{ext}", buffer.getbuffer().nbytes, None)
+        except Exception:
+            uploaded_file.seek(0)
+            ext = os.path.splitext(uploaded_file.name)[1]
+            uploaded_file.name = f"{slug}_{index}{ext}"
+            return uploaded_file
+
+    def _process_video(self, uploaded_file, slug):
+        try:
+            ext = os.path.splitext(uploaded_file.name)[1] or ".mp4"
+            temp_in = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+            for chunk in uploaded_file.chunks():
+                temp_in.write(chunk)
+            temp_in.flush()
+
+            clip = VideoFileClip(temp_in.name)
+            if clip.h > 1080:
+                clip = clip.resize(height=1080)
+            temp_out = tempfile.NamedTemporaryFile(delete=False, suffix=ext)
+            clip.write_videofile(temp_out.name, codec="libx264", audio_codec="aac", logger=None)
+            clip.close()
+            temp_in.close()
+
+            processed_file = open(temp_out.name, "rb")
+            new_file = InMemoryUploadedFile(processed_file, None, f"{slug}{ext}", "video/mp4", os.path.getsize(temp_out.name), None)
+            return new_file
+        except Exception:
+            uploaded_file.seek(0)
+            uploaded_file.name = f"{slug}{os.path.splitext(uploaded_file.name)[1]}"
+            return uploaded_file
