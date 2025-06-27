@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!-- Hero -->
+<section class="bg-[#232323] text-white rounded-3xl shadow-xl mb-16">
+  <div class="container mx-auto px-4 py-20 text-center">
+    <h1 class="text-5xl font-extrabold mb-4 text-gold">Contact Us</h1>
+    <p class="text-xl opacity-90 mb-8 max-w-2xl mx-auto text-secondary">
+      We'd love to hear from you. Reach out using the form below or via the details provided.
+    </p>
+  </div>
+</section>
+
+<div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
+  <div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gold">Get in Touch</h2>
+    <p class="text-secondary">Phone: <a href="tel:+34952000000" class="text-gold hover:text-[#EFCB89]">+34 952 000 000</a></p>
+    <p class="text-secondary">Email: <a href="mailto:info@groupidealprimer.com" class="text-gold hover:text-[#EFCB89]">info@groupidealprimer.com</a></p>
+    <p class="text-secondary">Address: Málaga, Andalucía, Spain</p>
+  </div>
+  <div class="bg-gip border-2 border-gold rounded-xl p-8 shadow-xl">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mb-4 text-green-500">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label for="id_name" class="block text-sm font-medium text-gold">Name</label>
+        {{ form.name }}
+        {% for error in form.name.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-gold">Email</label>
+        {{ form.email }}
+        {% for error in form.email.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div>
+        <label for="id_message" class="block text-sm font-medium text-gold">Message</label>
+        {{ form.message }}
+        {% for error in form.message.errors %}
+          <p class="text-red-500 text-sm">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <button type="submit" class="w-full button-gold text-[#232323] rounded-md shadow-md hover:shadow-lg">Send Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

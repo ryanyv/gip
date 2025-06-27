@@ -30,5 +30,6 @@ This is a Django web application for property listings.
 ## Usage
 
 - Visit `/` for the homepage and `/properties/` for property listings.
+- Use `/contact/` to reach the contact page.
 - The admin interface is available at `/admin/` when the server is running.
 
