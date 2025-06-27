@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils.text import slugify
 
 PROPERTY_TYPE_CHOICES = [
     ('short-term', 'Short-Term Rental'),
@@ -66,6 +67,34 @@ class Photo(models.Model):
 
     def __str__(self):
         return f"{self.property.name} Photo #{self.order}"
+
+    def delete(self, *args, **kwargs):
+        # remove file from storage when object is deleted
+        storage = self.image.storage
+        name = self.image.name
+        super().delete(*args, **kwargs)
+        if name:
+            storage.delete(name)
+
+
+class Video(models.Model):
+    property = models.ForeignKey(Property, related_name='videos', on_delete=models.CASCADE)
+    video = models.FileField(upload_to='property_videos/')
+    order = models.PositiveIntegerField(default=0)
+    caption = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.property.name} Video #{self.order}"
+
+    def delete(self, *args, **kwargs):
+        storage = self.video.storage
+        name = self.video.name
+        super().delete(*args, **kwargs)
+        if name:
+            storage.delete(name)
 
 class Booking(models.Model):
     property = models.ForeignKey(Property, related_name='bookings', on_delete=models.CASCADE)
