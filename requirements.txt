@@ -1,2 +1,3 @@
 Django>=5.2.3
 Pillow>=11.2.1
+moviepy>=1.0.3

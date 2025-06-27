@@ -15,6 +15,21 @@
     </div>
   </div>
 
+  <!-- Video Gallery -->
+  <div class="w-full mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% for video in property.videos.all %}
+        <video controls class="rounded-xl w-full h-64 object-cover shadow">
+          <source src="{{ video.video.url }}" type="video/mp4">
+        </video>
+      {% empty %}
+        <div class="flex items-center justify-center w-full h-64 text-gray-300 bg-gray-100 rounded-xl">
+          <span>No videos available.</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
   <!-- Property Main Info -->
   <div class="flex flex-col md:flex-row gap-8 items-start">
     <div class="flex-1 flex flex-col gap-2">

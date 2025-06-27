@@ -1,6 +1,62 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Property, Facility, Photo
+from django.utils.text import slugify
+from django.core.files.base import ContentFile
+from .models import Property, Facility, Photo, Video
+from PIL import Image
+import tempfile
+import subprocess
+from io import BytesIO
+import os
+
+
+def compress_image(file, max_size=1280, quality=75):
+    try:
+        image = Image.open(file)
+        image.thumbnail((max_size, max_size))
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG", quality=quality)
+        return ContentFile(buffer.getvalue(), name=file.name)
+    except Exception:
+        file.seek(0)
+        return ContentFile(file.read(), name=file.name)
+
+
+def compress_video(file, property_slug, order):
+    ext = os.path.splitext(file.name)[1]
+    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as src:
+        for chunk in file.chunks():
+            src.write(chunk)
+    src_path = src.name
+    dest = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    dest_path = dest.name
+    dest.close()
+    cmd = [
+        "ffmpeg",
+        "-i",
+        src_path,
+        "-vf",
+        "scale='min(1920,iw)':-2",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-crf",
+        "28",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        dest_path,
+        "-y",
+    ]
+    subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+    with open(dest_path, "rb") as f:
+        data = f.read()
+    os.remove(src_path)
+    os.remove(dest_path)
+    filename = f"{property_slug}-{order+1}.mp4"
+    return ContentFile(data, name=filename)
 
 
 class MultiFileInput(forms.ClearableFileInput):
@@ -30,6 +86,11 @@ class PropertyForm(forms.ModelForm):
         required=False,
         widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
         help_text="Upload one or more photos",
+    )
+    videos = MultiFileField(
+        required=False,
+        widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
+        help_text="Upload one or more videos",
     )
     responsible = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
@@ -110,7 +171,15 @@ class PropertyForm(forms.ModelForm):
     def save(self, commit=True):
         property_obj = super().save(commit)
         photos = self.cleaned_data.get("photos", [])
+        videos = self.cleaned_data.get("videos", [])
         if commit:
+            slug = slugify(property_obj.name)
             for order, image in enumerate(photos):
-                Photo.objects.create(property=property_obj, image=image, order=order)
+                compressed = compress_image(image)
+                filename = f"{slug}-{order+1}.jpg"
+                photo = Photo(property=property_obj, order=order)
+                photo.image.save(filename, compressed, save=True)
+            for order, video_file in enumerate(videos):
+                compressed_video = compress_video(video_file, slug, order)
+                Video.objects.create(property=property_obj, video=compressed_video, order=order)
         return property_obj

@@ -67,6 +67,29 @@ class Photo(models.Model):
     def __str__(self):
         return f"{self.property.name} Photo #{self.order}"
 
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)
+
+
+class Video(models.Model):
+    property = models.ForeignKey(Property, related_name='videos', on_delete=models.CASCADE)
+    video = models.FileField(upload_to='property_videos/')
+    order = models.PositiveIntegerField(default=0)
+    caption = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.property.name} Video #{self.order}"
+
+    def delete(self, *args, **kwargs):
+        if self.video:
+            self.video.delete(save=False)
+        super().delete(*args, **kwargs)
+
 class Booking(models.Model):
     property = models.ForeignKey(Property, related_name='bookings', on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
