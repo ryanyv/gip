@@ -36,6 +36,32 @@ def manage_properties(request):
 
 @login_required
 @user_passes_test(is_admin_or_superadmin)
+def manage_bookings(request):
+    """Custom booking management page listing all bookings."""
+    bookings = Booking.objects.select_related('property', 'user').all().order_by('-created_at')
+    return render(request, 'admin_panel/manage_bookings.html', {
+        'bookings': bookings,
+    })
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def delete_booking(request, pk):
+    """Delete a booking via AJAX from the management page."""
+    if request.method != "POST":
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(["POST"])
+
+    from django.shortcuts import get_object_or_404
+    from django.http import JsonResponse
+
+    booking = get_object_or_404(Booking, pk=pk)
+    booking.delete()
+    return JsonResponse({"deleted": True})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
 def delete_property(request, pk):
     """Delete a property via AJAX from the management page."""
     if request.method != "POST":
