@@ -351,9 +351,42 @@ document.addEventListener('DOMContentLoaded', () => {
     highlight();
   });
 
-  document.getElementById('detailClear')?.addEventListener('click', ()=>{
-    selStart = selEnd = null; highlight();
-  });
+document.getElementById('detailClear')?.addEventListener('click', ()=>{
+  selStart = selEnd = null; highlight();
+});
 
   render();
+});
+
+// -------------------------------------------------------------
+//  Admin-panel property deletion
+// -------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const getCookie = name => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    return parts.length === 2 ? parts.pop().split(';').shift() : null;
+  };
+
+  document.querySelectorAll('.delete-property-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      if(!confirm('Are you sure you want to delete this property?')) return;
+      const url = btn.dataset.url;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken') || '',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      }).then(resp => {
+        if(resp.ok){
+          btn.closest('tr')?.remove();
+        }else{
+          alert('Deletion failed');
+        }
+      }).catch(()=> alert('Deletion failed'));
+    });
+  });
 });

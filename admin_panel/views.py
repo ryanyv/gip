@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse, HttpResponseNotAllowed
 from accounts.models import User
 from properties.models import Property, Booking
 
@@ -32,3 +33,15 @@ def manage_properties(request):
     return render(request, 'admin_panel/manage_properties.html', {
         'properties': properties,
     })
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def delete_property(request, pk):
+    """Delete a property via AJAX request."""
+    if request.method != "POST":
+        return HttpResponseNotAllowed(["POST"])
+
+    prop = get_object_or_404(Property, pk=pk)
+    prop.delete()
+    return JsonResponse({"success": True})
