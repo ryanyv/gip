@@ -2,3 +2,5 @@
 db.sqlite3
 __pycache__/
 *.py[cod]
+core/__pycache__/urls.cpython-313.pyc
+*.pyc
