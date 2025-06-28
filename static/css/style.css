@@ -236,4 +236,5 @@ a:hover, .hover\:text-gold:hover {
 /* ----- Photo gallery ----- */
 #photoGallery div{ transition: transform 150ms ease; }
 #photoGallery div.drag-target{ border:2px dashed var(--gip-gold); }
-#photoModal{ display:flex; }
+#photoModal { display:flex; }
+#photoModal.hidden { display:none; }
