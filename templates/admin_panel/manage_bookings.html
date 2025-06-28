@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="bg-white/90 rounded-xl shadow-xl p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Manage Bookings</h1>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-in</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check-out</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {% for booking in bookings %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">{{ booking.property.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {% if booking.user %}{{ booking.user.get_full_name|default:booking.user.username }}{% else %}-{% endif %}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ booking.start_date }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ booking.end_date }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">{{ booking.get_status_display }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <a href="{% url 'admin:properties_booking_change' booking.id %}" class="text-blue-600 hover:underline">View</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No bookings found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

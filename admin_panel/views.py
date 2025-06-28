@@ -48,3 +48,13 @@ def delete_property(request, pk):
     prop = get_object_or_404(Property, pk=pk)
     prop.delete()
     return JsonResponse({"deleted": True})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def manage_bookings(request):
+    """Custom bookings management page listing all bookings."""
+    bookings = Booking.objects.select_related("property", "user").order_by("-created_at")
+    return render(request, "admin_panel/manage_bookings.html", {
+        "bookings": bookings,
+    })
