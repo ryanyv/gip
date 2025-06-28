@@ -22,3 +22,17 @@ def dashboard(request):
     if request.user.is_superadmin or request.user.is_superuser:
         context['users_count'] = User.objects.count()
     return render(request, 'admin_panel/dashboard.html', context)
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def property_management(request):
+    """Custom property management page showing a list of properties."""
+    properties = Property.objects.all().order_by('-created_at')
+    return render(
+        request,
+        'admin_panel/property_management.html',
+        {
+            'properties': properties,
+        },
+    )
