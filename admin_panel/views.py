@@ -16,7 +16,7 @@ def is_admin_or_superadmin(user):
 def dashboard(request):
     """Render the management dashboard with some basic statistics."""
     context = {
-        'properties_count': Property.objects.count(),
+        'properties_count': Property.objects.filter(is_archived=False).count(),
         'bookings_count': Booking.objects.count(),
     }
     if request.user.is_superadmin or request.user.is_superuser:
