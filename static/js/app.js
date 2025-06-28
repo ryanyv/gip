@@ -117,6 +117,21 @@ document.addEventListener('DOMContentLoaded', function () {
       setActiveField(null);
     }
   });
+
+  /* -------------- Photo modal -------------- */
+  const modal        = document.getElementById('photoModal');
+  const modalImg     = document.getElementById('photoModalImg');
+  const closePhotoModal = document.getElementById('closePhotoModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    const closePhoto = () => {
+      modal.classList.add('hidden');
+      if (modalImg) modalImg.src = '';
+    };
+    closePhotoModal?.addEventListener('click', closePhoto);
+    modal.addEventListener('click', e => { if (e.target === modal) closePhoto(); });
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') closePhoto(); });
+  }
 });
 
 // Future: Image carousel, drag-drop, modals, map integration JS goes here.
