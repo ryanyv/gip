@@ -357,3 +357,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   render();
 });
+
+// Safety-net: ensure quick-view modal is hidden when new pages load
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('propertyModal')?.classList.add('hidden');
+});
