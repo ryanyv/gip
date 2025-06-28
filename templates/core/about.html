@@ -38,27 +38,15 @@
   <div class="container mx-auto px-4">
     <h2 class="text-3xl font-bold text-center mb-10 text-gold">Meet Our Team</h2>
     <div class="grid md:grid-cols-3 gap-10">
-      <!-- Team Member 1 -->
+      {% for member in team_members %}
       <div class="bg-[#232323] rounded-2xl shadow-xl flex flex-col items-center text-center p-8 border-2 border-gold hover:shadow-2xl transition">
-        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="María González" class="w-28 h-28 rounded-full object-cover mb-4 border-4 border-gold shadow-md">
-        <h3 class="text-lg font-bold text-gold mb-1">María González Ruiz</h3>
-        <span class="text-gold font-semibold mb-2">Managing Director</span>
-        <p class="text-secondary text-sm">15+ years in Málaga real estate. Fluent in Spanish, English, German.</p>
+        <img src="{{ member.profile_photo_url }}" alt="{{ member.get_full_name }}" class="w-28 h-28 rounded-full object-cover mb-4 border-4 border-gold shadow-md">
+        <h3 class="text-lg font-bold text-gold mb-1">{{ member.get_full_name }}</h3>
+        {% if member.position %}<span class="text-gold font-semibold mb-2">{{ member.position }}</span>{% endif %}
       </div>
-      <!-- Team Member 2 -->
-      <div class="bg-[#232323] rounded-2xl shadow-xl flex flex-col items-center text-center p-8 border-2 border-gold hover:shadow-2xl transition">
-        <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="Carlos Fernández" class="w-28 h-28 rounded-full object-cover mb-4 border-4 border-gold shadow-md">
-        <h3 class="text-lg font-bold text-gold mb-1">Carlos Fernández Torres</h3>
-        <span class="text-gold font-semibold mb-2">Investment Specialist</span>
-        <p class="text-secondary text-sm">Expert in rental & investment, maximizing property returns for clients.</p>
-      </div>
-      <!-- Team Member 3 -->
-      <div class="bg-[#232323] rounded-2xl shadow-xl flex flex-col items-center text-center p-8 border-2 border-gold hover:shadow-2xl transition">
-        <img src="https://randomuser.me/api/portraits/women/76.jpg" alt="Elena Morales" class="w-28 h-28 rounded-full object-cover mb-4 border-4 border-gold shadow-md">
-        <h3 class="text-lg font-bold text-gold mb-1">Elena Morales Silva</h3>
-        <span class="text-gold font-semibold mb-2">Valuation Expert</span>
-        <p class="text-secondary text-sm">Market analysis and accurate valuations for the Costa del Sol.</p>
-      </div>
+      {% empty %}
+      <p class="col-span-3 text-center text-secondary">Team information coming soon.</p>
+      {% endfor %}
     </div>
   </div>
 </section>
