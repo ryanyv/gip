@@ -4,9 +4,9 @@ from properties.models import Property
 from accounts.models import User
 
 def home(request):
-    featured_properties = Property.objects.filter(is_featured=True)[:3]
+    featured_properties = Property.objects.filter(is_featured=True, is_archived=False)[:3]
     if not featured_properties:
-        featured_properties = Property.objects.order_by("-created_at")[:3]
+        featured_properties = Property.objects.filter(is_archived=False).order_by("-created_at")[:3]
     return render(request, "core/home.html", {"featured_properties": featured_properties})
 
 def about(request):

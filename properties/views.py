@@ -10,7 +10,7 @@ from .forms import PropertyForm
 
 def property_list(request):
     filter_type = request.GET.get('type')
-    qs = Property.objects.all()
+    qs = Property.objects.filter(is_archived=False)
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
     properties = qs.order_by('-created_at')
