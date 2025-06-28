@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8 bg-white/90 rounded-xl shadow">
+  <h1 class="text-2xl font-bold mb-4">{{ property.name }} - Manage Bookings</h1>
+
+  <script id="bookedDatesJSON" type="application/json">
+    {{ booked_dates_json|safe }}
+  </script>
+
+  <div id="detailCalendarContainer" class="overflow-x-auto text-base w-full">
+    <div id="detailCalendarGrid" class="flex gap-6 select-none"></div>
+  </div>
+
+  <div class="flex items-center gap-4 mt-2">
+    <span id="detailSelected" class="text-gray-700 text-sm"></span>
+    <button id="detailClear" type="button" class="text-xs underline text-gray-500 hover:text-gold">Clear</button>
+  </div>
+
+  <form method="post" class="mt-6 flex items-center gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="start_date" id="start_date">
+    <input type="hidden" name="end_date" id="end_date">
+    <button type="submit" class="bg-gold text-[#232323] font-bold px-6 py-2 rounded shadow hover:scale-105 transition">Block Dates</button>
+    {% if error %}<span class="text-red-500 font-semibold">{{ error }}</span>{% endif %}
+    {% if success %}<span class="text-green-600 font-semibold">{{ success }}</span>{% endif %}
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const inBox = document.getElementById('start_date');
+  const outBox = document.getElementById('end_date');
+  const calGrid = document.getElementById('detailCalendarGrid');
+  if (!inBox || !outBox || !calGrid) return;
+  calGrid.addEventListener('click', function() {
+    const s = calGrid.querySelector('button.range-start');
+    const e = calGrid.querySelector('button.range-end');
+    inBox.value = s ? s.dataset.date : '';
+    outBox.value = e ? e.dataset.date : '';
+  });
+});
+</script>
+{% endblock %}
