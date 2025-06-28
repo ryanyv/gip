@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Properties</h1>
+<ul>
+  {% for prop in properties %}
+    <li>{{ prop.name }} {% if prop.archived %}(Archived){% endif %}</li>
+  {% empty %}
+    <li>No properties</li>
+  {% endfor %}
+</ul>
+{% endblock %}

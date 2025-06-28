@@ -39,6 +39,7 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_featured = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
     responsible = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

@@ -10,7 +10,7 @@ from .forms import PropertyForm
 
 def property_list(request):
     filter_type = request.GET.get('type')
-    qs = Property.objects.all()
+    qs = Property.objects.filter(archived=False)
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
     properties = qs.order_by('-created_at')
@@ -111,3 +111,30 @@ def add_property(request):
     else:
         form = PropertyForm(initial={"responsible": request.user.pk}, user=request.user)
     return render(request, 'properties/add_property.html', {'form': form, 'show_responsible': show_responsible})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def admin_property_list(request):
+    properties = Property.objects.all().order_by('-created_at')
+    return render(request, 'properties/admin_property_list.html', {'properties': properties})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def archive_property(request, pk):
+    prop = get_object_or_404(Property, pk=pk)
+    prop.archived = True
+    prop.save()
+    messages.success(request, "Property archived.")
+    return redirect('properties:admin_property_list')
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def unarchive_property(request, pk):
+    prop = get_object_or_404(Property, pk=pk)
+    prop.archived = False
+    prop.save()
+    messages.success(request, "Property unarchived.")
+    return redirect('properties:admin_property_list')
