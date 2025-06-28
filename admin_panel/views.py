@@ -48,3 +48,19 @@ def delete_property(request, pk):
     prop = get_object_or_404(Property, pk=pk)
     prop.delete()
     return JsonResponse({"deleted": True})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def manage_bookings(request):
+    """List properties for managing bookings."""
+    filter_type = request.GET.get("type", "short-term")
+    qs = Property.objects.all()
+    if filter_type in ["short-term", "long-term", "investment"]:
+        qs = qs.filter(property_type=filter_type)
+    properties = qs.order_by("-created_at")
+    return render(
+        request,
+        "admin_panel/manage_bookings.html",
+        {"properties": properties, "filter_type": filter_type},
+    )
