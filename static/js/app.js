@@ -119,6 +119,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Make property table rows clickable
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.property-row').forEach(row => {
+    row.addEventListener('click', e => {
+      if (e.target.closest('.no-row-link')) return;
+      const url = row.dataset.editUrl;
+      if (url) window.location.href = url;
+    });
+  });
+});
+
 // Future: Image carousel, drag-drop, modals, map integration JS goes here.
 
 /* -------------- Calendar dropdown (check‑in/out) -------------- */

@@ -42,6 +42,19 @@ a:hover, .hover\:text-gold:hover {
   color: #232323;
 }
 
+.button-red {
+  background: #dc2626;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.button-red:hover {
+  background: #b91c1c;
+  color: #fff;
+}
+
 .navbar, .footer {
   background: var(--gip-bg) !important;
   color: var(--gip-text);
