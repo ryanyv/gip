@@ -6,6 +6,8 @@ function setActiveField(el){
 
 // Mobile Navbar Toggle (if not handled inline)
 document.addEventListener('DOMContentLoaded', function () {
+  // Ensure lingering quick-view modal is hidden on fresh load
+  document.getElementById('propertyModal')?.classList.add('hidden');
   const btn = document.getElementById('mobile-menu-button');
   const menu = document.getElementById('mobile-menu');
   const openIcon = document.getElementById('mobile-menu-icon-open');
