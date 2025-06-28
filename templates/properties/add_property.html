@@ -212,6 +212,10 @@
   const modal        = document.getElementById('photoModal');
   const modalImg     = document.getElementById('photoModalImg');
   const closeModal   = document.getElementById('closePhotoModal');
+  // ensure modal hidden on initial load
+  document.addEventListener('DOMContentLoaded',()=>{
+    modal?.classList.add('hidden');
+  });
   let photoFiles = [];
 
   if(photoInput) photoInput.classList.add('hidden');
@@ -252,16 +256,18 @@
   }
 
   new Sortable(gallery, { animation: 150, onEnd: updateOrder });
-
-  closeModal?.addEventListener('click', () => {
+  const closePhoto = () => {
     modal.classList.add('hidden');
     modalImg.src = '';
-  });
+  };
+  closeModal?.addEventListener('click', closePhoto);
   modal?.addEventListener('click', e => {
     if(e.target === modal){
-      modal.classList.add('hidden');
-      modalImg.src = '';
+      closePhoto();
     }
+  });
+  window.addEventListener('keydown', e => {
+    if(e.key === 'Escape') closePhoto();
   });
 
   document.querySelector('form')?.addEventListener('submit', () => {
