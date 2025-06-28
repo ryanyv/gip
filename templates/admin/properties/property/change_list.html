@@ -1,0 +1,39 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    .deletelink-button {
+        background-color: #dc2626; /* red-600 */
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('#result_list tbody tr').forEach(function(row) {
+            const link = row.querySelector('th > a');
+            if (link) {
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function(e) {
+                    if (e.target.tagName.toLowerCase() === 'a' || e.target.classList.contains('deletelink')) {
+                        return;
+                    }
+                    window.location = link.getAttribute('href');
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+{% block result_list %}
+{{ block.super }}
+<script>
+    document.querySelectorAll('a.deletelink').forEach(function(el) {
+        el.classList.add('deletelink-button');
+    });
+</script>
+{% endblock %}
