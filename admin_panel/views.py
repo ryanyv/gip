@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from accounts.models import User
 from properties.models import Property, Booking
 
@@ -32,3 +34,13 @@ def manage_properties(request):
     return render(request, 'admin_panel/manage_properties.html', {
         'properties': properties,
     })
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+@require_POST
+def delete_property(request, pk):
+    """Delete a property and return JSON response."""
+    prop = get_object_or_404(Property, pk=pk)
+    prop.delete()
+    return JsonResponse({'success': True})

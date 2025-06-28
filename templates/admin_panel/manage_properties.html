@@ -20,7 +20,7 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           {% for property in properties %}
-          <tr onclick="window.location='{% url 'admin:properties_property_change' property.id %}'" class="hover:bg-gray-50 cursor-pointer">
+          <tr data-id="{{ property.id }}" onclick="window.location='{% url 'admin:properties_property_change' property.id %}'" class="hover:bg-gray-50 cursor-pointer">
             <td class="px-6 py-4 whitespace-nowrap">
               {% if property.photos.first %}
                 <img src="{{ property.photos.first.image.url }}" alt="{{ property.name }}" class="w-16 h-16 object-cover rounded">
@@ -32,7 +32,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ property.get_property_type_display }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ property.location }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <a href="{% url 'admin:properties_property_delete' property.id %}" class="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" onclick="event.stopPropagation();">Delete</a>
+              <a href="#" data-url="{% url 'admin_panel_delete_property' property.id %}" class="delete-property inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded" onclick="event.stopPropagation();">Delete</a>
             </td>
           </tr>
           {% empty %}
@@ -45,4 +45,44 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  function getCookie(name) {
+    let value = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let c of cookies) {
+        c = c.trim();
+        if (c.substring(0, name.length + 1) === (name + '=')) {
+          value = decodeURIComponent(c.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return value;
+  }
+  const csrf = getCookie('csrftoken');
+  document.querySelectorAll('.delete-property').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!confirm('Delete this property?')) return;
+      const row = btn.closest('tr');
+      fetch(btn.dataset.url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrf }
+      }).then(resp => {
+        if (resp.ok) {
+          row.remove();
+        } else {
+          alert('Failed to delete property.');
+        }
+      }).catch(() => alert('Failed to delete property.'));
+    });
+  });
+});
+</script>
 {% endblock %}
