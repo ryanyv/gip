@@ -6,6 +6,8 @@ function setActiveField(el){
 
 // Mobile Navbar Toggle (if not handled inline)
 document.addEventListener('DOMContentLoaded', function () {
+  // Ensure photo modal hidden on load if present
+  document.getElementById('photoModal')?.classList.add('hidden');
   const btn = document.getElementById('mobile-menu-button');
   const menu = document.getElementById('mobile-menu');
   const openIcon = document.getElementById('mobile-menu-icon-open');

@@ -206,6 +206,9 @@
   updateFacilities();
 
   /* ---------- Photos upload & gallery ---------- */
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('photoModal')?.classList.add('hidden');
+  });
   const photoInput   = document.getElementById('id_photos');
   const addPhotosBtn = document.getElementById('addPhotosBtn');
   const gallery      = document.getElementById('photoGallery');
@@ -252,17 +255,13 @@
   }
 
   new Sortable(gallery, { animation: 150, onEnd: updateOrder });
-
-  closeModal?.addEventListener('click', () => {
+  const closePhoto = () => {
     modal.classList.add('hidden');
     modalImg.src = '';
-  });
-  modal?.addEventListener('click', e => {
-    if(e.target === modal){
-      modal.classList.add('hidden');
-      modalImg.src = '';
-    }
-  });
+  };
+  closeModal?.addEventListener('click', closePhoto);
+  modal?.addEventListener('click', e => { if(e.target === modal) closePhoto(); });
+  window.addEventListener('keydown', e => { if(e.key === 'Escape') closePhoto(); });
 
   document.querySelector('form')?.addEventListener('submit', () => {
     const dt = new DataTransfer();
