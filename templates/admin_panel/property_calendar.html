@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10 p-6 md:p-12 bg-white rounded-2xl shadow-2xl flex flex-col gap-6 text-[#232323]">
+  <h1 class="text-3xl font-bold text-gold">{{ property.name }} - Manage Bookings</h1>
+
+  <script id="bookedDatesJSON" type="application/json">
+    {{ booked_dates_json|safe }}
+  </script>
+
+  <div id="detailCalendarContainer" class="overflow-x-auto text-base w-full">
+    <div id="detailCalendarGrid" class="flex gap-6 select-none"></div>
+  </div>
+  <div class="flex items-center gap-4">
+    <span id="detailSelected" class="text-gray-700 text-sm"></span>
+    <button id="detailClear" type="button" class="text-xs underline text-gray-500 hover:text-gold">Clear</button>
+  </div>
+
+  <form method="post" class="flex flex-col sm:flex-row gap-4 items-end">
+    {% csrf_token %}
+    <div>
+      <label for="start_date" class="block text-sm font-medium text-gray-700">Start</label>
+      <input type="text" name="start_date" id="start_date" readonly class="border border-gray-300 rounded p-2">
+    </div>
+    <div>
+      <label for="end_date" class="block text-sm font-medium text-gray-700">End</label>
+      <input type="text" name="end_date" id="end_date" readonly class="border border-gray-300 rounded p-2">
+    </div>
+    <button type="submit" class="bg-gold text-[#232323] font-bold px-6 py-2 rounded shadow hover:scale-105">Block Dates</button>
+    {% if error %}<span class="text-red-500 text-sm">{{ error }}</span>{% endif %}
+    {% if success %}<span class="text-green-600 text-sm">{{ success }}</span>{% endif %}
+  </form>
+</div>
+<script>
+// Sync inputs with selected dates
+document.addEventListener('DOMContentLoaded', function(){
+  const grid = document.getElementById('detailCalendarGrid');
+  const s = document.getElementById('start_date');
+  const e = document.getElementById('end_date');
+  if(!grid || !s || !e) return;
+  grid.addEventListener('click', function(){
+    const st = grid.querySelector('button.range-start');
+    const en = grid.querySelector('button.range-end');
+    s.value = st ? st.dataset.date : '';
+    e.value = en ? en.dataset.date : '';
+  });
+});
+</script>
+{% endblock %}
