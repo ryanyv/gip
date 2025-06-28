@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white/90 p-8 rounded-xl shadow">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ property.name }} - Bookings</h1>
+  {% if messages %}
+    <ul class="mb-4">
+    {% for message in messages %}
+      <li class="text-green-600">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  {% if error %}
+    <p class="text-red-500 mb-4">{{ error }}</p>
+  {% endif %}
+  <script id="bookedDatesJSON" type="application/json">
+    {{ booked_dates_json|safe }}
+  </script>
+  <div id="detailCalendarContainer" class="overflow-x-auto text-base w-full">
+    <div id="detailCalendarGrid" class="flex gap-6 select-none"></div>
+  </div>
+  <div class="flex items-center gap-4">
+    <span id="detailSelected" class="text-gray-700 text-sm"></span>
+    <button id="detailClear" type="button" class="text-xs underline text-gray-500 hover:text-gold">Clear</button>
+  </div>
+  <form method="post" class="mt-4">
+    {% csrf_token %}
+    <input type="hidden" name="start_date" id="start_date">
+    <input type="hidden" name="end_date" id="end_date">
+    <button type="submit" class="button-gold">Block Selected Dates</button>
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+// Calendar logic borrowed from property detail page
+document.addEventListener('DOMContentLoaded', () => {
+  const grid   = document.getElementById('detailCalendarGrid');
+  const jsonEl = document.getElementById('bookedDatesJSON');
+  if (!grid || !jsonEl) return;
+
+  const booked = JSON.parse(jsonEl.textContent || '[]');
+  const isBlocked = iso => booked.some(r => iso >= r.start && iso <= r.end);
+
+  let showMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let selStart = null;
+  let selEnd = null;
+
+  const mNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const wNames = ['S','M','T','W','T','F','S'];
+
+  function monthGrid(dt){
+    const y = dt.getFullYear(), m = dt.getMonth();
+    const lead = new Date(y,m,1).getDay();
+    const days = new Date(y,m+1,0).getDate();
+    let html = `<div class="flex flex-col gap-2 flex-1">`;
+    html += `<div class="font-semibold text-lg text-center text-[#232323]">${mNames[m]} ${y}</div>`;
+    html += '<div class="grid grid-cols-7 gap-0">';
+    wNames.forEach(d=> html += `<div class="text-xs font-medium text-center text-gray-400">${d}</div>`);
+    for(let b=0;b<lead;b++) html += '<div></div>';
+    for(let d=1;d<=days;d++){
+      const iso = new Date(y,m,d).toISOString().split('T')[0];
+      const dis = isBlocked(iso);
+      html += `<button data-date="${iso}" ${dis?'disabled':''} class="h-14 w-14 flex items-center justify-center rounded text-[#232323] text-base ${dis?'opacity-30 cursor-not-allowed':'hover:bg-[#F8ECD8]'}">${d}</button>`;
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function render(){
+    const next = new Date(showMonth.getFullYear(), showMonth.getMonth()+1, 1);
+    grid.innerHTML = monthGrid(showMonth) + monthGrid(next);
+    highlight();
+  }
+
+  function highlight(){
+    grid.querySelectorAll('button[data-date]').forEach(b=>{
+      const iso = b.dataset.date;
+      b.classList.remove('range-start','range-end','in-range','no-after');
+      b.classList.remove('bg-gold','text-white','bg-[#F8ECD8]');
+      if(selStart && iso===selStart){
+        b.classList.add('range-start','bg-gold','text-white');
+        if(!selEnd || selStart===selEnd) b.classList.add('no-after');
+      }
+      if(selEnd && iso===selEnd){
+        b.classList.add('range-end','bg-gold','text-white');
+        if(!selStart || selStart===selEnd) b.classList.add('no-after');
+      }
+      if(selStart && selEnd && iso>selStart && iso<selEnd){
+        b.classList.add('in-range','bg-[#F8ECD8]');
+      }
+    });
+    document.getElementById('detailSelected').textContent = selStart && selEnd ? `${selStart} – ${selEnd}` : '';
+    document.getElementById('start_date').value = selStart || '';
+    document.getElementById('end_date').value = selEnd || '';
+  }
+
+  grid.addEventListener('click', e => {
+    const btn = e.target.closest('button[data-date]');
+    if (!btn || btn.disabled) return;
+    const iso = btn.dataset.date;
+    if (!selStart || (selStart && selEnd)) {
+      selStart = iso;
+      selEnd = null;
+    } else if (selStart && !selEnd) {
+      if (new Date(iso) >= new Date(selStart)) {
+        selEnd = iso;
+      } else {
+        selStart = iso;
+      }
+    }
+    highlight();
+  });
+
+  document.getElementById('detailClear')?.addEventListener('click', () => {
+    selStart = selEnd = null;
+    highlight();
+  });
+
+  render();
+});
+</script>
+{% endblock %}

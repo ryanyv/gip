@@ -30,7 +30,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ property.get_property_type_display }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ property.location }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm">
-              <a href="{% url 'admin:properties_booking_changelist' %}?property__id__exact={{ property.id }}" class="text-blue-600 hover:text-blue-800 hover:underline">View Bookings</a>
+              <a href="{% url 'admin_panel_property_bookings' property.id %}" class="text-blue-600 hover:text-blue-800 hover:underline">View Bookings</a>
             </td>
           </tr>
           {% empty %}

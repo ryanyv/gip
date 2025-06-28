@@ -1,5 +1,9 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from datetime import timedelta
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 from accounts.models import User
 from properties.models import Property, Booking
 
@@ -63,4 +67,65 @@ def manage_bookings(request):
         request,
         "admin_panel/manage_bookings.html",
         {"properties": properties, "filter_type": filter_type},
+    )
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def property_bookings(request, pk):
+    """Display and manage bookings for a single property."""
+    property_obj = get_object_or_404(Property, pk=pk)
+
+    bookings = Booking.objects.filter(property=property_obj, status="booked")
+    booked_dates = [
+        {
+            "start": b.start_date.isoformat(),
+            "end": (b.end_date + timedelta(days=1)).isoformat(),
+            "title": "Booked",
+        }
+        for b in bookings
+    ]
+
+    error = None
+    if request.method == "POST":
+        start_date_str = request.POST.get("start_date")
+        end_date_str = request.POST.get("end_date")
+        from datetime import datetime
+
+        try:
+            start_date = datetime.fromisoformat(start_date_str).date() if start_date_str else None
+            end_date = datetime.fromisoformat(end_date_str).date() if end_date_str else None
+        except Exception:
+            start_date = end_date = None
+
+        if not start_date or not end_date or start_date >= end_date:
+            error = "Please select a valid date range."
+        else:
+            overlap = Booking.objects.filter(
+                property=property_obj,
+                status="booked",
+                start_date__lt=end_date,
+                end_date__gt=start_date,
+            ).exists()
+            if overlap:
+                error = "Selected dates overlap with an existing booking."
+            else:
+                Booking.objects.create(
+                    property=property_obj,
+                    user=request.user,
+                    start_date=start_date,
+                    end_date=end_date,
+                    status="booked",
+                )
+                messages.success(request, "Dates blocked successfully.")
+                return redirect(request.path)
+
+    return render(
+        request,
+        "admin_panel/property_bookings.html",
+        {
+            "property": property_obj,
+            "booked_dates_json": json.dumps(booked_dates, cls=DjangoJSONEncoder),
+            "error": error,
+        },
     )
