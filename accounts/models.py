@@ -20,6 +20,8 @@ class User(AbstractUser):
     position = models.CharField(max_length=100, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    show_on_team_page = models.BooleanField(default=False)
     SEX_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female'),
