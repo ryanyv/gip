@@ -13,3 +13,7 @@ def about(request):
 
 def contact(request):
     return render(request, "core/contact.html")
+
+def privacy(request):
+    """Render the privacy policy page."""
+    return render(request, "core/privacy.html")
