@@ -32,3 +32,19 @@ def manage_properties(request):
     return render(request, 'admin_panel/manage_properties.html', {
         'properties': properties,
     })
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def delete_property(request, pk):
+    """Delete a property via AJAX from the management page."""
+    if request.method != "POST":
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(["POST"])
+
+    from django.shortcuts import get_object_or_404
+    from django.http import JsonResponse
+
+    prop = get_object_or_404(Property, pk=pk)
+    prop.delete()
+    return JsonResponse({"deleted": True})
