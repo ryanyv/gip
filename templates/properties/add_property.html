@@ -39,7 +39,7 @@
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
-      <div id="map" class="w-full h-64 rounded-md border border-gold mb-4"></div>
+      <div id="map" class="w-full h-64 rounded-md border border-gold mb-4" tabindex="-1"></div>
       <div>
         <label for="id_location" class="block text-sm font-medium text-gold">Location</label>
         {{ form.location }}
@@ -144,7 +144,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
-  const map = L.map('map').setView([36.7213, -4.4217], 12);
+  const map = L.map('map', { keyboard: false }).setView([36.7213, -4.4217], 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
