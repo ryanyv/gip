@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from properties.models import Property
+from .models import TeamMember
 
 def home(request):
     featured_properties = Property.objects.filter(is_featured=True)[:3]
@@ -9,7 +10,8 @@ def home(request):
     return render(request, "core/home.html", {"featured_properties": featured_properties})
 
 def about(request):
-    return render(request, "core/about.html")
+    team = TeamMember.objects.select_related("user")
+    return render(request, "core/about.html", {"team_members": team})
 
 def contact(request):
     return render(request, "core/contact.html")
