@@ -28,6 +28,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Ensure photo modal is hidden on load
+  document.getElementById('photoModal')?.classList.add('hidden');
+
+  // Photo modal close handlers
+  const photoModal     = document.getElementById('photoModal');
+  const photoModalImg  = document.getElementById('photoModalImg');
+  const closePhotoModal = document.getElementById('closePhotoModal');
+  const closePhoto = () => {
+    photoModal?.classList.add('hidden');
+    if(photoModalImg) photoModalImg.src = '';
+  };
+  closePhotoModal?.addEventListener('click', closePhoto);
+  photoModal?.addEventListener('click', e => {
+    if(e.target === photoModal) closePhoto();
+  });
+  window.addEventListener('keydown', e => {
+    if(e.key === 'Escape') closePhoto();
+  });
+
   /* ------- Search bar glass focus ------- */
   whereField    = document.getElementById('whereField');
   checkinField  = document.getElementById('checkinField');
