@@ -3,6 +3,7 @@
 
 <div class="flex flex-col gap-8">
 
+  {% if filter_type == 'short-term' %}
   <div class="flex justify-center mb-10">
     <form method="get"
           class="flex items-center w-full max-w-7xl rounded-full bg-white border border-gray-200 shadow-lg px-4 py-3
@@ -145,8 +146,9 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
         </svg>
       </button>
-    </form>
-  </div>
+      </form>
+    </div>
+  {% endif %}
 
   <!-- Tabs for Property Types -->
   <div class="flex flex-wrap gap-3 mb-6 justify-center">
