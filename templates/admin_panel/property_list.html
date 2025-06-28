@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gold">Properties</h1>
+    <a href="{% url 'add_property' %}" class="button-gold px-4 py-2 rounded-md text-[#232323]">Add Property</a>
+  </div>
+  <div class="overflow-x-auto bg-gip border border-gold rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-[#1f1f1f] text-gold">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-semibold">Name</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold">Type</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold">Location</th>
+          <th class="px-4 py-2 text-left text-sm font-semibold">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for property in properties %}
+        <tr class="hover:bg-[#2d2d2d]">
+          <td class="px-4 py-2">{{ property.name }}</td>
+          <td class="px-4 py-2">{{ property.get_property_type_display }}</td>
+          <td class="px-4 py-2">{{ property.location }}</td>
+          <td class="px-4 py-2">
+            <a href="{% url 'admin_panel_edit_property' property.pk %}" class="text-blue-400 hover:underline mr-2">Edit</a>
+            <a href="{% url 'admin_panel_delete_property' property.pk %}" class="text-red-400 hover:underline mr-2">Delete</a>
+            <a href="{% url 'admin_panel_archive_property' property.pk %}" class="text-yellow-400 hover:underline">Archive</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="px-4 py-4 text-center text-gray-400">No properties found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
