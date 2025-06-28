@@ -26,6 +26,21 @@ def dashboard(request):
 
 @login_required
 @user_passes_test(is_admin_or_superadmin)
+def manage_bookings(request):
+    """List properties for bookings, optionally filtered by type."""
+    property_type = request.GET.get('type', 'short-term')
+    qs = Property.objects.all()
+    if property_type in ['short-term', 'long-term', 'investment']:
+        qs = qs.filter(property_type=property_type)
+    properties = qs.order_by('name')
+    return render(request, 'admin_panel/manage_bookings.html', {
+        'properties': properties,
+        'property_type': property_type,
+    })
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
 def manage_properties(request):
     """Custom property management page listing all properties."""
     properties = Property.objects.all().order_by('-created_at')
