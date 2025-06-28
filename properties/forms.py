@@ -84,13 +84,11 @@ class MultiFileField(forms.FileField):
 class PropertyForm(forms.ModelForm):
     photos = MultiFileField(
         required=False,
-        widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
-        help_text="Upload one or more photos",
-    )
-    videos = MultiFileField(
-        required=False,
-        widget=MultiFileInput(attrs={"class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2"}),
-        help_text="Upload one or more videos",
+        widget=MultiFileInput(attrs={
+            "class": "block w-full text-sm text-gray-300 file:bg-gold file:text-[#232323] file:font-semibold file:px-4 file:py-2 file:rounded file:border-0 file:mr-2",
+            "accept": "image/*,video/*",
+        }),
+        help_text="Upload photos and videos",
     )
     responsible = forms.ModelChoiceField(
         queryset=get_user_model().objects.all(),
@@ -170,16 +168,22 @@ class PropertyForm(forms.ModelForm):
 
     def save(self, commit=True):
         property_obj = super().save(commit)
-        photos = self.cleaned_data.get("photos", [])
-        videos = self.cleaned_data.get("videos", [])
+        files = self.cleaned_data.get("photos", [])
         if commit:
             slug = slugify(property_obj.name)
-            for order, image in enumerate(photos):
-                compressed = compress_image(image)
-                filename = f"{slug}-{order+1}.jpg"
-                photo = Photo(property=property_obj, order=order)
-                photo.image.save(filename, compressed, save=True)
-            for order, video_file in enumerate(videos):
-                compressed_video = compress_video(video_file, slug, order)
-                Video.objects.create(property=property_obj, video=compressed_video, order=order)
+            photo_order = 0
+            video_order = 0
+            for f in files:
+                if getattr(f, "content_type", "").startswith("video"):
+                    compressed_video = compress_video(f, slug, video_order)
+                    Video.objects.create(
+                        property=property_obj, video=compressed_video, order=video_order
+                    )
+                    video_order += 1
+                else:
+                    compressed = compress_image(f)
+                    filename = f"{slug}-{photo_order+1}.jpg"
+                    photo = Photo(property=property_obj, order=photo_order)
+                    photo.image.save(filename, compressed, save=True)
+                    photo_order += 1
         return property_obj

@@ -118,18 +118,11 @@
         {{ form.photos }}
         <button id="addPhotosBtn" type="button" class="button-gold mb-2">Insert Photos</button>
         <div id="photoGallery" class="grid grid-cols-3 gap-2"></div>
-        <div id="photoModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+        <div id="photoModal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
           <button id="closePhotoModal" type="button" class="absolute top-4 right-4 text-white text-2xl">&times;</button>
           <img id="photoModalImg" class="max-h-full max-w-full object-contain" />
         </div>
         {% for error in form.photos.errors %}
-          <p class="text-red-500 text-sm">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div>
-        <label for="id_videos" class="block text-sm font-medium text-gold">Videos</label>
-        {{ form.videos }}
-        {% for error in form.videos.errors %}
           <p class="text-red-500 text-sm">{{ error }}</p>
         {% endfor %}
       </div>
@@ -210,7 +203,7 @@
   const addPhotosBtn = document.getElementById('addPhotosBtn');
   const gallery      = document.getElementById('photoGallery');
   const modal        = document.getElementById('photoModal');
-  const modalImg     = document.getElementById('photoModalImg');
+  let modalImg       = document.getElementById('photoModalImg');
   const closeModal   = document.getElementById('closePhotoModal');
   let photoFiles = [];
 
@@ -232,10 +225,26 @@
       const div = document.createElement('div');
       div.className = 'relative';
       div.dataset.index = idx;
-      div.innerHTML = `<img src="${url}" class="w-full h-24 object-cover rounded cursor-pointer">`;
+      const isVideo = file.type.startsWith('video');
+      div.innerHTML = isVideo
+        ? `<video src="${url}" class="w-full h-24 object-cover rounded cursor-pointer" muted></video>`
+        : `<img src="${url}" class="w-full h-24 object-cover rounded cursor-pointer">`;
       gallery.appendChild(div);
       div.addEventListener('click', () => {
-        modalImg.src = url;
+        if(isVideo){
+          const vid = document.createElement('video');
+          vid.src = url;
+          vid.controls = true;
+          vid.className = 'max-h-full max-w-full object-contain';
+          modalImg.replaceWith(vid);
+          modalImg = vid;
+        }else{
+          const img = document.createElement('img');
+          img.src = url;
+          img.className = 'max-h-full max-w-full object-contain';
+          modalImg.replaceWith(img);
+          modalImg = img;
+        }
         modal.classList.remove('hidden');
       });
     });
@@ -255,11 +264,13 @@
 
   closeModal?.addEventListener('click', () => {
     modal.classList.add('hidden');
+    if(modalImg.tagName === 'VIDEO') modalImg.pause();
     modalImg.src = '';
   });
   modal?.addEventListener('click', e => {
     if(e.target === modal){
       modal.classList.add('hidden');
+      if(modalImg.tagName === 'VIDEO') modalImg.pause();
       modalImg.src = '';
     }
   });
