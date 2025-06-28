@@ -48,3 +48,25 @@ def delete_property(request, pk):
     prop = get_object_or_404(Property, pk=pk)
     prop.delete()
     return JsonResponse({"deleted": True})
+
+
+@login_required
+@user_passes_test(is_admin_or_superadmin)
+def manage_bookings(request):
+    """List bookings filtered by selected short-term property."""
+    property_id = request.GET.get("property")
+    properties = Property.objects.filter(property_type="short-term").order_by("name")
+    selected_property = None
+    bookings = Booking.objects.none()
+
+    if property_id:
+        selected_property = Property.objects.filter(id=property_id, property_type="short-term").first()
+        if selected_property:
+            bookings = Booking.objects.filter(property=selected_property).order_by("-start_date")
+
+    context = {
+        "properties": properties,
+        "bookings": bookings,
+        "selected_property": selected_property,
+    }
+    return render(request, "admin_panel/manage_bookings.html", context)
