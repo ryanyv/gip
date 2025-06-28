@@ -28,6 +28,8 @@ class User(AbstractUser):
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, blank=True, null=True)
     no_commercial_emails = models.BooleanField(default=False)
     agreed_tos = models.BooleanField(default=False)
+    is_team_member = models.BooleanField(default=False)
+    bio = models.TextField(blank=True, null=True)
 
     @property
     def profile_photo_url(self):

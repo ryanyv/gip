@@ -7,14 +7,47 @@ from .models import User
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     # Show these fields in the user list
-    list_display = ('username', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'position', 'is_superuser', 'profile_photo_tag')
-    list_filter = ('role', 'is_superuser', 'is_active')
-    search_fields = ('username', 'email', 'first_name', 'last_name', 'position', 'phone_number')
+    list_display = (
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'role',
+        'position',
+        'is_team_member',
+        'is_superuser',
+        'profile_photo_tag',
+    )
+    list_filter = ('role', 'is_superuser', 'is_active', 'is_team_member')
+    search_fields = (
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'position',
+        'phone_number',
+        'bio',
+    )
 
     # Fieldsets for user detail page in admin
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'phone_number', 'profile_photo', 'position')}),
+        (
+            'Personal info',
+            {
+                'fields': (
+                    'first_name',
+                    'last_name',
+                    'email',
+                    'phone_number',
+                    'profile_photo',
+                    'position',
+                    'bio',
+                    'is_team_member',
+                )
+            },
+        ),
         ('Roles & Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
@@ -23,7 +56,25 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'phone_number', 'role', 'position', 'profile_photo', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': (
+                'username',
+                'email',
+                'first_name',
+                'last_name',
+                'phone_number',
+                'role',
+                'position',
+                'bio',
+                'is_team_member',
+                'profile_photo',
+                'password1',
+                'password2',
+                'is_active',
+                'is_staff',
+                'is_superuser',
+                'groups',
+                'user_permissions',
+            ),
         }),
     )
 
