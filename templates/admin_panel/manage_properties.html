@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-3xl font-bold text-gold mb-6">Manage Properties</h1>
+{% if messages %}
+  <ul class="mb-4">
+  {% for message in messages %}
+    <li class="text-green-500">{{ message }}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+<div class="mb-4">
+  <a href="{% url 'add_property' %}" class="button-gold px-4 py-2 rounded">Add Property</a>
+</div>
+<div class="overflow-x-auto bg-white text-[#232323] rounded-lg shadow">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      {% for property in properties %}
+      <tr>
+        <td class="px-4 py-2 whitespace-nowrap">{{ property.name }}</td>
+        <td class="px-4 py-2 whitespace-nowrap">{{ property.get_property_type_display }}</td>
+        <td class="px-4 py-2 whitespace-nowrap">{{ property.location }}</td>
+        <td class="px-4 py-2 whitespace-nowrap">
+          <a href="{% url 'admin_panel:edit_property' property.pk %}" class="text-blue-600 hover:underline mr-3">Edit</a>
+          <form action="{% url 'admin_panel:delete_property' property.pk %}" method="post" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-red-600 hover:underline" onclick="return confirm('Delete this property?');">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="px-4 py-6 text-center text-gray-500">No properties found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
