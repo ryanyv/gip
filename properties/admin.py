@@ -19,9 +19,10 @@ class PropertyAdmin(admin.ModelAdmin):
         'guests',
         'bedrooms',
         'is_featured',
+        'is_archived',
         'created_at',
     )
-    list_filter = ('property_type', 'is_featured', 'guests')
+    list_filter = ('property_type', 'is_featured', 'is_archived', 'guests')
     search_fields = ('name', 'location')
     inlines = [PhotoInline]
     filter_horizontal = ('facilities',)
