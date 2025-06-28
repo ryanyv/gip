@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from admin_panel.views import is_admin_or_superadmin
@@ -10,7 +11,7 @@ from .forms import PropertyForm
 
 def property_list(request):
     filter_type = request.GET.get('type')
-    qs = Property.objects.all()
+    qs = Property.objects.filter(is_archived=False)
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
     properties = qs.order_by('-created_at')
@@ -29,6 +30,8 @@ def property_detail(request, pk):
     from django.utils import timezone
 
     property = get_object_or_404(Property, pk=pk)
+    if property.is_archived and not is_admin_or_superadmin(request.user):
+        raise Http404()
     # Get all bookings with status 'booked'
     bookings = Booking.objects.filter(property=property, status='booked')
     booked_dates = [

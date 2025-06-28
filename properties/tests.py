@@ -78,3 +78,39 @@ class AddPropertyPermissionTests(TestCase):
         response = self.client.get(reverse("add_property"))
         self.assertContains(response, "id_responsible")
 
+
+class PropertyArchiveTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.admin = User.objects.create_user(username="admin", password="pass", role="admin")
+        self.property = Property.objects.create(
+            name="Archived Prop",
+            property_type="short-term",
+            location="Town",
+            description="d",
+            guests=1,
+            bedrooms=1,
+            bathrooms=1,
+        )
+
+    def test_unarchived_visible(self):
+        response = self.client.get(reverse("properties:property_list"))
+        self.assertContains(response, self.property.name)
+
+    def test_archived_hidden(self):
+        self.property.is_archived = True
+        self.property.save()
+        response = self.client.get(reverse("properties:property_list"))
+        self.assertNotContains(response, self.property.name)
+
+
+class AdminManagePropertiesTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.admin = User.objects.create_user(username="admin", password="pass", role="admin")
+        self.client.login(username="admin", password="pass")
+
+    def test_admin_can_access_manage(self):
+        response = self.client.get(reverse("admin_panel:manage_properties"))
+        self.assertEqual(response.status_code, 200)
+

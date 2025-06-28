@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold mb-6 text-gold">Manage Properties</h1>
+  <div class="text-right mb-4">
+    <a href="{% url 'add_property' %}" class="button-gold inline-block">Add Property</a>
+  </div>
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="min-w-full text-[#232323]">
+      <thead class="bg-gold text-[#232323]">
+        <tr>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Type</th>
+          <th class="p-3 text-left">Location</th>
+          <th class="p-3 text-left">Archived</th>
+          <th class="p-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for property in properties %}
+        <tr class="border-b last:border-none">
+          <td class="p-3">{{ property.name }}</td>
+          <td class="p-3">{{ property.get_property_type_display }}</td>
+          <td class="p-3">{{ property.location }}</td>
+          <td class="p-3">{{ property.is_archived|yesno:"Yes,No" }}</td>
+          <td class="p-3 space-x-2 whitespace-nowrap">
+            <a href="{% url 'admin_panel:edit_property' property.pk %}" class="text-blue-600 hover:underline">Edit</a>
+            <form action="{% url 'admin_panel:toggle_archive_property' property.pk %}" method="post" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="text-yellow-600 hover:underline">
+                {% if property.is_archived %}Unarchive{% else %}Archive{% endif %}
+              </button>
+            </form>
+            <form action="{% url 'admin_panel:delete_property' property.pk %}" method="post" class="inline" onsubmit="return confirm('Delete this property?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-600 hover:underline">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="p-4 text-center">No properties found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
