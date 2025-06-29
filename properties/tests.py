@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from .models import Property
 from django.core.files.uploadedfile import SimpleUploadedFile
+from datetime import date
+from .models import Booking
 
 
 class AddPropertyPermissionTests(TestCase):
@@ -77,4 +79,49 @@ class AddPropertyPermissionTests(TestCase):
         self.client.login(username="admin", password="pass")
         response = self.client.get(reverse("add_property"))
         self.assertContains(response, "id_responsible")
+
+
+class PropertySearchTests(TestCase):
+    def setUp(self):
+        self.prop1 = Property.objects.create(
+            name="Beach House",
+            property_type="short-term",
+            location="Beach City",
+            description="A place",
+            guests=2,
+            bedrooms=1,
+            bathrooms=1,
+        )
+        self.prop2 = Property.objects.create(
+            name="City Apartment",
+            property_type="short-term",
+            location="Big City",
+            description="Another place",
+            guests=2,
+            bedrooms=1,
+            bathrooms=1,
+        )
+
+    def test_query_search(self):
+        url = reverse("properties:property_list")
+        response = self.client.get(url, {"type": "short-term", "q": "Beach"})
+        self.assertContains(response, "Beach House")
+        self.assertNotContains(response, "City Apartment")
+
+    def test_date_availability_filter(self):
+        Booking.objects.create(
+            property=self.prop1,
+            start_date=date(2023, 9, 1),
+            end_date=date(2023, 9, 5),
+            status="booked",
+        )
+        url = reverse("properties:property_list")
+        checkin = date(2023, 9, 2).strftime("%-m/%-d/%Y")
+        checkout = date(2023, 9, 4).strftime("%-m/%-d/%Y")
+        response = self.client.get(
+            url,
+            {"type": "short-term", "checkin": checkin, "checkout": checkout},
+        )
+        self.assertNotContains(response, "Beach House")
+        self.assertContains(response, "City Apartment")
 

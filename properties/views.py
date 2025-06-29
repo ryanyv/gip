@@ -1,18 +1,48 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
 from admin_panel.views import is_admin_or_superadmin
 from .models import Property, Booking
 import json
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import PropertyForm
 
 def property_list(request):
     filter_type = request.GET.get('type')
     qs = Property.objects.all()
+
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
+
+    # Text search
+    query = request.GET.get('q')
+    if query:
+        qs = qs.filter(Q(name__icontains=query) | Q(location__icontains=query))
+
+    # Availability search
+    def parse_date(val):
+        for fmt in ("%Y-%m-%d", "%m/%d/%Y", "%d/%m/%Y"):
+            try:
+                return datetime.strptime(val, fmt).date()
+            except (TypeError, ValueError):
+                continue
+        return None
+
+    checkin_str = request.GET.get('checkin')
+    checkout_str = request.GET.get('checkout')
+    checkin = parse_date(checkin_str)
+    checkout = parse_date(checkout_str)
+    if checkin and checkout and checkin < checkout:
+        booked_ids = Booking.objects.filter(
+            property_id__in=qs.values_list('id', flat=True),
+            status='booked',
+            start_date__lt=checkout,
+            end_date__gt=checkin,
+        ).values_list('property_id', flat=True)
+        qs = qs.exclude(id__in=list(booked_ids))
+
     properties = qs.order_by('-created_at')
     # Ranges for filter dropdowns
     guest_range = range(1, 13)     # 1‑12 guests
