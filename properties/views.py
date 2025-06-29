@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from admin_panel.views import is_admin_or_superadmin
 from .models import Property, Booking
 import json
-from datetime import timedelta
+import re
+from datetime import timedelta, datetime
+from django.db.models import Q, Exists, OuterRef
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import PropertyForm
 
@@ -13,6 +15,33 @@ def property_list(request):
     qs = Property.objects.all()
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
+
+    q = request.GET.get('q')
+    if q:
+        qs = qs.filter(Q(name__icontains=q) | Q(location__icontains=q) | Q(address__icontains=q))
+
+    guests_val = request.GET.get('guests')
+    if guests_val:
+        m = re.search(r"\d+", guests_val)
+        if m:
+            qs = qs.filter(guests__gte=int(m.group()))
+
+    start_str = request.GET.get('start_date')
+    end_str = request.GET.get('end_date')
+    if start_str and end_str:
+        try:
+            start = datetime.fromisoformat(start_str).date()
+            end = datetime.fromisoformat(end_str).date()
+            overlap = Booking.objects.filter(
+                property=OuterRef('pk'),
+                status='booked',
+                start_date__lt=end,
+                end_date__gt=start
+            )
+            qs = qs.annotate(has_overlap=Exists(overlap)).filter(has_overlap=False)
+        except ValueError:
+            pass
+
     properties = qs.order_by('-created_at')
     # Ranges for filter dropdowns
     guest_range = range(1, 13)     # 1‑12 guests

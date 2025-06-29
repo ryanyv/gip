@@ -35,6 +35,20 @@ document.addEventListener('DOMContentLoaded', function () {
   whoField      = document.getElementById('whoField');
   searchFields  = [whereField, checkinField, checkoutField, whoField];
 
+  if(startDateInput && startDateInput.value){
+    startDate = startDateInput.value;
+    checkInInput.value = new Date(startDate).toLocaleDateString();
+    calDropdown.dataset.start = startDate;
+  }
+  if(endDateInput && endDateInput.value){
+    endDate = endDateInput.value;
+    checkOutInput.value = new Date(endDate).toLocaleDateString();
+    calDropdown.dataset.end = endDate;
+  }
+  if(startDate || endDate){
+    highlightSelection();
+  }
+
   const whereInput = document.querySelector('input[name="q"]');
   whereInput?.addEventListener('focus', ()=> setActiveField(whereField));
   whereInput?.addEventListener('blur',  ()=> setActiveField(null));
@@ -131,6 +145,8 @@ const calPrev        = document.getElementById('calPrev');
 const calNext        = document.getElementById('calNext');
 const calApply       = document.getElementById('calApply');
 const calClear       = document.getElementById('calClear');
+const startDateInput = document.getElementById('startDateInput');
+const endDateInput   = document.getElementById('endDateInput');
 
 let currentMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // first of this month
 let startDate = null;
@@ -217,6 +233,8 @@ function highlightSelection(){
   checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
+  if(startDateInput) startDateInput.value = startDate || '';
+  if(endDateInput) endDateInput.value = endDate || '';
 
   if(start && !end){
     calendarField = 'checkout';

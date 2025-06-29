@@ -25,6 +25,7 @@
         <span class="text-base font-bold text-[#232323]">Check in</span>
         <input type="text"
                name="checkin"
+               value="{{ request.GET.checkin|default_if_none:'' }}"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar('checkin')"
@@ -37,6 +38,7 @@
         <span class="text-base font-bold text-[#232323]">Check out</span>
         <input type="text"
                name="checkout"
+               value="{{ request.GET.checkout|default_if_none:'' }}"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar('checkout')"
@@ -137,6 +139,10 @@
           </div>
         </div>
       </div>
+
+      <!-- Hidden ISO date fields -->
+      <input type="hidden" name="start_date" id="startDateInput" value="{{ request.GET.start_date|default_if_none:'' }}" />
+      <input type="hidden" name="end_date" id="endDateInput" value="{{ request.GET.end_date|default_if_none:'' }}" />
 
       <!-- Search button -->
       <button type="submit"
