@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from admin_panel.views import is_admin_or_superadmin
 from .models import Property, Booking
+from django.db.models import Q
+from datetime import datetime
 import json
 from datetime import timedelta
 from django.core.serializers.json import DjangoJSONEncoder
@@ -13,6 +15,35 @@ def property_list(request):
     qs = Property.objects.all()
     if filter_type in ['short-term', 'long-term', 'investment']:
         qs = qs.filter(property_type=filter_type)
+
+    q = request.GET.get('q')
+    if q:
+        qs = qs.filter(Q(name__icontains=q) | Q(location__icontains=q) | Q(address__icontains=q))
+
+    guests = request.GET.get('guests')
+    try:
+        if guests:
+            guests_int = int(guests)
+            qs = qs.filter(guests__gte=guests_int)
+    except (TypeError, ValueError):
+        pass
+
+    checkin  = request.GET.get('checkin')
+    checkout = request.GET.get('checkout')
+    start = end = None
+    try:
+        if checkin and checkout:
+            start = datetime.fromisoformat(checkin).date()
+            end   = datetime.fromisoformat(checkout).date()
+    except Exception:
+        start = end = None
+    if start and end and start < end:
+        qs = qs.exclude(
+            bookings__status='booked',
+            bookings__start_date__lt=end,
+            bookings__end_date__gt=start,
+        )
+
     properties = qs.order_by('-created_at')
     # Ranges for filter dropdowns
     guest_range = range(1, 13)     # 1‑12 guests

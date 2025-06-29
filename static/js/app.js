@@ -117,6 +117,24 @@ document.addEventListener('DOMContentLoaded', function () {
       setActiveField(null);
     }
   });
+
+  /* --------- Search form handling --------- */
+  const searchForm = document.getElementById('propertySearchForm');
+  if(searchForm){
+    const isoReg = /^\d{4}-\d{2}-\d{2}$/;
+    if(checkInInput && isoReg.test(checkInInput.value)){
+      startDate = checkInInput.value;
+    }
+    if(checkOutInput && isoReg.test(checkOutInput.value)){
+      endDate = checkOutInput.value;
+    }
+    highlightSelection();
+
+    searchForm.addEventListener('submit', ()=>{
+      if(checkInInput) checkInInput.value = calDropdown.dataset.start || '';
+      if(checkOutInput) checkOutInput.value = calDropdown.dataset.end || '';
+    });
+  }
 });
 
 // Future: Image carousel, drag-drop, modals, map integration JS goes here.
