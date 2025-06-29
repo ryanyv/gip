@@ -138,6 +138,11 @@
         </div>
       </div>
 
+      <!-- Hidden fields for search -->
+      <input type="hidden" name="checkin_iso" id="checkinIso" value="{{ request.GET.checkin_iso|default_if_none:'' }}" />
+      <input type="hidden" name="checkout_iso" id="checkoutIso" value="{{ request.GET.checkout_iso|default_if_none:'' }}" />
+      <input type="hidden" name="guests_total" id="guestsTotal" value="{{ request.GET.guests_total|default_if_none:'' }}" />
+
       <!-- Search button -->
       <button type="submit"
               class="ml-3 md:ml-6 flex items-center justify-center w-14 h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30 absolute right-4 md:static md:relative">

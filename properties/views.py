@@ -3,26 +3,72 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from admin_panel.views import is_admin_or_superadmin
 from .models import Property, Booking
+from django.db import models
 import json
 from datetime import timedelta
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import PropertyForm
 
 def property_list(request):
-    filter_type = request.GET.get('type')
+    """List properties and handle search for short‑term rentals."""
+
+    filter_type = request.GET.get("type")
     qs = Property.objects.all()
-    if filter_type in ['short-term', 'long-term', 'investment']:
+    if filter_type in ["short-term", "long-term", "investment"]:
         qs = qs.filter(property_type=filter_type)
-    properties = qs.order_by('-created_at')
-    # Ranges for filter dropdowns
-    guest_range = range(1, 13)     # 1‑12 guests
-    bedroom_range = range(1, 9)    # 1‑8 bedrooms
-    return render(request, 'properties/property_list.html', {
-        'properties': properties,
-        'filter_type': filter_type,
-        'guest_range': guest_range,
-        'bedroom_range': bedroom_range,
-    })
+
+    # Search parameters
+    q = request.GET.get("q")
+    checkin_iso = request.GET.get("checkin_iso")
+    checkout_iso = request.GET.get("checkout_iso")
+    guests_total = request.GET.get("guests_total")
+
+    if q:
+        qs = qs.filter(
+            models.Q(name__icontains=q)
+            | models.Q(location__icontains=q)
+            | models.Q(description__icontains=q)
+            | models.Q(address__icontains=q)
+        )
+
+    if guests_total:
+        try:
+            count = int(guests_total)
+            qs = qs.filter(guests__gte=count)
+        except ValueError:
+            pass
+
+    if checkin_iso and checkout_iso:
+        from datetime import datetime
+
+        try:
+            start_date = datetime.fromisoformat(checkin_iso).date()
+            end_date = datetime.fromisoformat(checkout_iso).date()
+        except ValueError:
+            start_date = end_date = None
+
+        if start_date and end_date and start_date < end_date:
+            qs = qs.exclude(
+                bookings__status="booked",
+                bookings__start_date__lt=end_date,
+                bookings__end_date__gt=start_date,
+            )
+
+    properties = qs.order_by("-created_at")
+
+    guest_range = range(1, 13)  # 1‑12 guests
+    bedroom_range = range(1, 9)  # 1‑8 bedrooms
+
+    return render(
+        request,
+        "properties/property_list.html",
+        {
+            "properties": properties,
+            "filter_type": filter_type,
+            "guest_range": guest_range,
+            "bedroom_range": bedroom_range,
+        },
+    )
 
 def property_detail(request, pk):
     from django.core.mail import send_mail  # Optional: if you want to send emails

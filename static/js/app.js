@@ -1,5 +1,8 @@
 let whereField, checkinField, checkoutField, whoField;
 let searchFields = [];
+const checkinIsoInput  = document.getElementById('checkinIso');
+const checkoutIsoInput = document.getElementById('checkoutIso');
+const guestsTotalInput = document.getElementById('guestsTotal');
 function setActiveField(el){
   searchFields.forEach(f => f?.classList.toggle('glass-active', f===el));
 }
@@ -89,6 +92,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const whoInput     = document.getElementById('whoInput');
   const whoDropdown  = document.getElementById('whoDropdown');
   const whoCounts    = { adults:0, children:0, infants:0, pets:0 };
+  if(guestsTotalInput && !guestsTotalInput.value){
+    guestsTotalInput.value = 0;
+  }
 
   window.toggleWhoDropdown = function(){
     if(!whoDropdown) return;
@@ -107,6 +113,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if(whoCounts.infants)  parts.push(`${whoCounts.infants} infants`);
     if(whoCounts.pets)     parts.push(`${whoCounts.pets} pets`);
     whoInput.value = parts.length ? parts.join(', ') : 'Add guests';
+    if(guestsTotalInput){
+      guestsTotalInput.value = whoCounts.adults + whoCounts.children + whoCounts.infants;
+    }
   }
 
   // close on click outside
@@ -215,6 +224,8 @@ function highlightSelection(){
 
   checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
   checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  if(checkinIsoInput)  checkinIsoInput.value  = startDate || '';
+  if(checkoutIsoInput) checkoutIsoInput.value = endDate || '';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 

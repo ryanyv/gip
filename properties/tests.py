@@ -2,8 +2,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from .models import Property
+from .models import Property, Booking
 from django.core.files.uploadedfile import SimpleUploadedFile
+from urllib.parse import urlencode
 
 
 class AddPropertyPermissionTests(TestCase):
@@ -77,4 +78,48 @@ class AddPropertyPermissionTests(TestCase):
         self.client.login(username="admin", password="pass")
         response = self.client.get(reverse("add_property"))
         self.assertContains(response, "id_responsible")
+
+
+class SearchTests(TestCase):
+    def setUp(self):
+        User = get_user_model()
+        self.user = User.objects.create_user(username="user", password="pass")
+        self.p1 = Property.objects.create(
+            name="Lake House",
+            property_type="short-term",
+            location="Lakeview",
+            description="Nice",
+            guests=4,
+            bedrooms=2,
+            bathrooms=1,
+        )
+        self.p2 = Property.objects.create(
+            name="City Loft",
+            property_type="short-term",
+            location="Downtown",
+            description="Cool",
+            guests=2,
+            bedrooms=1,
+            bathrooms=1,
+        )
+        Booking.objects.create(
+            property=self.p1,
+            user=self.user,
+            start_date="2024-06-10",
+            end_date="2024-06-15",
+            status="booked",
+        )
+
+    def test_search_excludes_booked(self):
+        params = {
+            "type": "short-term",
+            "checkin_iso": "2024-06-12",
+            "checkout_iso": "2024-06-14",
+            "guests_total": "2",
+        }
+        url = reverse("properties:property_list") + "?" + urlencode(params)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Lake House")
+        self.assertContains(response, "City Loft")
 
