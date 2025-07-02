@@ -197,7 +197,7 @@
             </span>
           </div>
           <div class="text-[#232323] font-medium text-xs sm:text-base mb-1 truncate">{{ property.location }}</div>
-          <div class="flex items-center text-gray-600 text-xs gap-2 sm:gap-3 mb-3">
+          <div class="hidden sm:flex items-center text-gray-600 text-xs gap-2 sm:gap-3 mb-3">
             <span>{{ property.bedrooms }} bd</span>
             <span>{{ property.bathrooms }} ba</span>
             <span>{{ property.area }} m²</span>
@@ -211,10 +211,10 @@
               €{{ property.price_per_night|floatformat:0 }}
             {% endif %}
           </div>
-          <div class="text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{{ property.description }}</div>
+          <div class="hidden md:block text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{{ property.description }}</div>
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto">
             <a href="{% url 'properties:property_detail' property.pk %}" class="button-gold w-full text-center flex items-center justify-center font-bold text-xs sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">More Info</a>
-            <a href="{% url 'properties:property_detail' property.pk %}#reserve" class="button-gold w-full text-center flex items-center justify-center font-bold text-xs sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">Reserve</a>
+            <a href="{% url 'properties:property_detail' property.pk %}#reserve" class="hidden sm:flex button-gold w-full text-center items-center justify-center font-bold text-xs sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">Reserve</a>
           </div>
         </div>
       </div>
