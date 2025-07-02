@@ -192,9 +192,19 @@ function renderCalendar(){
   highlightSelection();
 }
 
+function parseISO(iso){
+  if(!iso) return null;
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function formatDMY(date){
+  return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+}
+
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
+  const start = parseISO(startDate);
+  const end   = parseISO(endDate);
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
     const d = new Date(btn.dataset.date);
@@ -213,8 +223,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDMY(start) : 'Add dates';
+  checkOutInput.value = end ? formatDMY(end) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
