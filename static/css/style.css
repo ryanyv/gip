@@ -269,3 +269,12 @@ a:hover, .hover\:text-gold:hover {
 #photoGallery div{ transition: transform 150ms ease; }
 #photoGallery div.drag-target{ border:2px dashed var(--gip-gold); }
 #photoModal:not(.hidden){ display:flex; }
+/* --- Mobile layout adjustments --- */
+@media (max-width: 639px) {
+  /* search bar tweaks */
+  form.search-bar { display: flex; flex-wrap: wrap; }
+  form.search-bar .search-field { flex: 1 1 45%; padding: 0.5rem; }
+  form.search-bar button[type="submit"] { flex-basis: 100%; margin-top: 0.5rem; }
+  /* smaller property card images */
+  .property-card img { height: 8rem; }
+}
