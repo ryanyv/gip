@@ -8,39 +8,39 @@
     <form method="get"
           class="flex flex-col md:flex-row md:items-center w-full max-w-7xl rounded-2xl md:rounded-full bg-white border border-gray-200 shadow-lg p-2 md:px-8 md:py-4 relative gap-2">
       <!-- Where -->
-      <div id="whereField" class="search-field flex-1 flex flex-col justify-center p-3 md:p-0 rounded-xl md:rounded-none">
-        <span class="text-sm md:text-base font-bold text-[#232323]">Where</span>
+      <div id="whereField" class="search-field flex-1 flex flex-col justify-center p-2 md:p-0 rounded-xl md:rounded-none">
+        <span class="text-xs md:text-base font-bold text-[#232323]">Where</span>
         <input type="text"
                name="q"
                value="{{ request.GET.q|default_if_none:'' }}"
                placeholder="Search destinations"
-               class="w-full text-base md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400" />
+               class="w-full text-sm md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400" />
       </div>
       <!-- Divider -->
       <div class="h-px w-full md:h-10 md:w-px bg-gray-200"></div>
 
       <!-- Check in -->
-      <div id="checkinField" class="search-field flex-1 flex flex-col justify-center p-3 md:p-0 rounded-xl md:rounded-none">
-        <span class="text-sm md:text-base font-bold text-[#232323]">Check in</span>
+      <div id="checkinField" class="search-field flex-1 flex flex-col justify-center p-2 md:p-0 rounded-xl md:rounded-none">
+        <span class="text-xs md:text-base font-bold text-[#232323]">Check in</span>
         <input type="text"
                name="checkin"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar('checkin')"
-               class="w-full text-base md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
+               class="w-full text-sm md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
       </div>
       <!-- Divider -->
       <div class="h-px w-full md:h-10 md:w-px bg-gray-200"></div>
 
       <!-- Check out -->
-      <div id="checkoutField" class="search-field flex-1 flex flex-col justify-center p-3 md:p-0 rounded-xl md:rounded-none">
-        <span class="text-sm md:text-base font-bold text-[#232323]">Check out</span>
+      <div id="checkoutField" class="search-field flex-1 flex flex-col justify-center p-2 md:p-0 rounded-xl md:rounded-none">
+        <span class="text-xs md:text-base font-bold text-[#232323]">Check out</span>
         <input type="text"
                name="checkout"
                placeholder="Add dates"
                readonly
                onclick="toggleCalendar('checkout')"
-               class="w-full text-base md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
+               class="w-full text-sm md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer" />
       </div>
 
       <!-- Calendar dropdown -->
@@ -68,8 +68,8 @@
       <!-- Flex container for Who field and Search button to align them on desktop -->
       <div class="flex flex-row items-center justify-between md:justify-center md:flex-1 gap-2 p-1 md:p-0">
         <!-- Who -->
-        <div id="whoField" class="search-field relative flex-1 flex flex-col justify-center items-start p-3 md:p-0 rounded-xl md:rounded-none">
-          <span class="text-sm md:text-base font-bold text-[#232323]">Who</span>
+        <div id="whoField" class="search-field relative flex-1 flex flex-col justify-center items-start p-2 md:p-0 rounded-xl md:rounded-none">
+          <span class="text-xs md:text-base font-bold text-[#232323]">Who</span>
           <input
             id="whoInput"
             type="text"
@@ -77,65 +77,65 @@
             readonly
             value="Add guests"
             placeholder="Add guests"
-            class="w-full text-base md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer"
+            class="w-full text-sm md:text-lg bg-transparent border-none focus:outline-none p-0 mt-1 font-normal text-gray-500 placeholder-gray-400 cursor-pointer"
             onclick="toggleWhoDropdown()"
           />
 
           <!-- Dropdown -->
           <div id="whoDropdown"
-               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 md:mt-4 w-full max-w-md md:w-[500px] rounded-3xl shadow-2xl bg-white z-50 p-4 md:p-6 hidden border border-gray-100">
+               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 md:mt-4 w-full max-w-md md:w-[500px] rounded-3xl shadow-2xl bg-white z-50 p-3 md:p-6 hidden border border-gray-100">
             <!-- Adults -->
-            <div class="flex justify-between items-center py-3 md:py-4">
+            <div class="flex justify-between items-center py-2 md:py-4">
               <div>
-                <div class="font-bold text-base md:text-lg text-[#222]">Adults</div>
-                <div class="text-gray-500 text-sm md:text-base mt-1">Ages 13 or above</div>
+                <div class="font-bold text-sm md:text-lg text-[#222]">Adults</div>
+                <div class="text-gray-500 text-xs md:text-base mt-1">Ages 13 or above</div>
               </div>
-              <div class="flex items-center gap-3 md:gap-4">
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('adults', -1)">-</button>
-                <span id="who-adults" class="text-lg md:text-xl w-7 md:w-8 text-center font-bold text-[#222]">0</span>
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('adults', 1)">+</button>
+              <div class="flex items-center gap-2 md:gap-4">
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('adults', -1)">-</button>
+                <span id="who-adults" class="text-base md:text-xl w-6 md:w-8 text-center font-bold text-[#222]">0</span>
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('adults', 1)">+</button>
               </div>
             </div>
             <hr class="my-1 border-gray-200" />
 
             <!-- Children -->
-            <div class="flex justify-between items-center py-3 md:py-4">
+            <div class="flex justify-between items-center py-2 md:py-4">
               <div>
-                <div class="font-bold text-base md:text-lg text-[#222]">Children</div>
-                <div class="text-gray-500 text-sm md:text-base mt-1">Ages 2–12</div>
+                <div class="font-bold text-sm md:text-lg text-[#222]">Children</div>
+                <div class="text-gray-500 text-xs md:text-base mt-1">Ages 2–12</div>
               </div>
-              <div class="flex items-center gap-3 md:gap-4">
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('children', -1)">-</button>
-                <span id="who-children" class="text-lg md:text-xl w-7 md:w-8 text-center font-bold text-[#222]">0</span>
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('children', 1)">+</button>
+              <div class="flex items-center gap-2 md:gap-4">
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('children', -1)">-</button>
+                <span id="who-children" class="text-base md:text-xl w-6 md:w-8 text-center font-bold text-[#222]">0</span>
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('children', 1)">+</button>
               </div>
             </div>
             <hr class="my-1 border-gray-200" />
 
             <!-- Infants -->
-            <div class="flex justify-between items-center py-3 md:py-4">
+            <div class="flex justify-between items-center py-2 md:py-4">
               <div>
-                <div class="font-bold text-base md:text-lg text-[#222]">Infants</div>
-                <div class="text-gray-500 text-sm md:text-base mt-1">Under 2</div>
+                <div class="font-bold text-sm md:text-lg text-[#222]">Infants</div>
+                <div class="text-gray-500 text-xs md:text-base mt-1">Under 2</div>
               </div>
-              <div class="flex items-center gap-3 md:gap-4">
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('infants', -1)">-</button>
-                <span id="who-infants" class="text-lg md:text-xl w-7 md:w-8 text-center font-bold text-[#222]">0</span>
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('infants', 1)">+</button>
+              <div class="flex items-center gap-2 md:gap-4">
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('infants', -1)">-</button>
+                <span id="who-infants" class="text-base md:text-xl w-6 md:w-8 text-center font-bold text-[#222]">0</span>
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('infants', 1)">+</button>
               </div>
             </div>
             <hr class="my-1 border-gray-200" />
 
             <!-- Pets -->
-            <div class="flex justify-between items-center py-3 md:py-4">
+            <div class="flex justify-between items-center py-2 md:py-4">
               <div>
-                <div class="font-bold text-base md:text-lg text-[#222]">Pets</div>
-                <a href="#" class="text-gray-600 underline text-sm md:text-base mt-1">Bringing a service animal?</a>
+                <div class="font-bold text-sm md:text-lg text-[#222]">Pets</div>
+                <a href="#" class="text-gray-600 underline text-xs md:text-base mt-1">Bringing a service animal?</a>
               </div>
-              <div class="flex items-center gap-3 md:gap-4">
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('pets', -1)">-</button>
-                <span id="who-pets" class="text-lg md:text-xl w-7 md:w-8 text-center font-bold text-[#222]">0</span>
-                <button type="button" class="who-btn-airbnb text-xl md:text-2xl w-10 h-10 md:w-11 md:h-11" onclick="updateWho('pets', 1)">+</button>
+              <div class="flex items-center gap-2 md:gap-4">
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('pets', -1)">-</button>
+                <span id="who-pets" class="text-base md:text-xl w-6 md:w-8 text-center font-bold text-[#222]">0</span>
+                <button type="button" class="who-btn-airbnb text-lg md:text-2xl w-8 h-8 md:w-11 md:h-11" onclick="updateWho('pets', 1)">+</button>
               </div>
             </div>
           </div>
@@ -143,8 +143,8 @@
 
         <!-- Search button -->
         <button type="submit"
-                class="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30 md:static">
-          <svg class="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                class="flex items-center justify-center w-10 h-10 md:w-14 md:h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30 md:static">
+          <svg class="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8" stroke="currentColor" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
           </svg>
