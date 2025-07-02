@@ -142,6 +142,15 @@ const monthNamesFull = ['January','February','March','April','May','June','July'
                         'August','September','October','November','December'];
 const weekDays = ['S','M','T','W','T','F','S'];
 
+function formatDate(date){
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC'
+  });
+}
+
 function createMonthGrid(dateObj){
   const y = dateObj.getFullYear();
   const m = dateObj.getMonth();
@@ -193,11 +202,11 @@ function renderCalendar(){
 }
 
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
+  const start = startDate ? new Date(startDate + 'T00:00:00') : null;
+  const end   = endDate ? new Date(endDate + 'T00:00:00') : null;
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    const d = new Date(btn.dataset.date);
+    const d = new Date(btn.dataset.date + 'T00:00:00');
     btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
@@ -213,8 +222,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDate(start) : 'Add dates';
+  checkOutInput.value = end ? formatDate(end) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
