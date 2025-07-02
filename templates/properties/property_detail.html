@@ -191,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Find highlighted buttons for range
     const s = calGrid.querySelector('button.range-start');
     const e = calGrid.querySelector('button.range-end');
-    inBox.value = s ? s.dataset.date : '';
-    outBox.value = e ? e.dataset.date : '';
+    inBox.value = s ? formatDisplay(parseISODate(s.dataset.date)) : '';
+    outBox.value = e ? formatDisplay(parseISODate(e.dataset.date)) : '';
   });
 });
 </script>
