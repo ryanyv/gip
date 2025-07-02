@@ -6,10 +6,9 @@
   {% if filter_type == 'short-term' %}
   <div class="flex justify-center mb-10">
     <form method="get"
-          class="flex items-center w-full max-w-7xl rounded-full bg-white border border-gray-200 shadow-lg px-4 py-3
-                 md:px-8 md:py-4 relative">
+          class="flex flex-col sm:flex-row items-stretch sm:items-center w-full max-w-7xl rounded-xl sm:rounded-full bg-white border border-gray-200 shadow-lg gap-2 p-4 sm:gap-0 sm:px-8 sm:py-4 relative">
       <!-- Where -->
-      <div id="whereField" class="search-field flex-1 flex flex-col justify-center">
+      <div id="whereField" class="search-field sm:flex-1 flex flex-col justify-center">
         <span class="text-base font-bold text-[#232323]">Where</span>
         <input type="text"
                name="q"
@@ -21,7 +20,7 @@
       <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
 
       <!-- Check in -->
-      <div id="checkinField" class="search-field flex-1 flex flex-col justify-center">
+      <div id="checkinField" class="search-field sm:flex-1 flex flex-col justify-center">
         <span class="text-base font-bold text-[#232323]">Check in</span>
         <input type="text"
                name="checkin"
@@ -33,7 +32,7 @@
       <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
 
       <!-- Check out -->
-      <div id="checkoutField" class="search-field flex-1 flex flex-col justify-center">
+      <div id="checkoutField" class="search-field sm:flex-1 flex flex-col justify-center">
         <span class="text-base font-bold text-[#232323]">Check out</span>
         <input type="text"
                name="checkout"
@@ -45,7 +44,7 @@
 
       <!-- Calendar dropdown -->
       <div id="calendarDropdown"
-           class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[1050px] rounded-3xl shadow-2xl bg-white z-50 p-10 hidden border border-gray-100"
+           class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-full sm:w-[1050px] rounded-3xl shadow-2xl bg-white z-50 p-6 sm:p-10 hidden border border-gray-100"
            data-start=""
            data-end="">
         <div id="calendarHeader" class="flex items-center justify-between mb-4">
@@ -53,7 +52,7 @@
           <div id="calMonthLabel" class="font-bold text-lg text-[#222]"></div>
           <button type="button" id="calNext" class="who-btn-airbnb">&gt;</button>
         </div>
-        <div id="calendarGrid" class="flex gap-8 text-center text-sm">
+        <div id="calendarGrid" class="flex gap-4 sm:gap-8 text-center text-sm">
           <!-- JS will populate -->
         </div>
         <div class="flex justify-end gap-3 mt-6">
@@ -65,7 +64,7 @@
       <div class="mx-2 h-10 w-px bg-gray-200 hidden md:block"></div>
 
       <!-- Who -->
-      <div id="whoField" class="search-field relative flex-1 flex flex-col justify-center items-center">
+      <div id="whoField" class="search-field relative sm:flex-1 flex flex-col justify-center items-center">
         <span class="text-base font-bold text-[#232323]">Who</span>
         <input
           id="whoInput"
@@ -80,7 +79,7 @@
 
         <!-- Dropdown -->
         <div id="whoDropdown"
-             class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[500px] rounded-3xl shadow-2xl bg-white z-50 p-6 hidden border border-gray-100">
+             class="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-full sm:w-[500px] rounded-3xl shadow-2xl bg-white z-50 p-6 hidden border border-gray-100">
           <!-- Adults -->
           <div class="flex justify-between items-center py-4">
             <div>
@@ -140,7 +139,7 @@
 
       <!-- Search button -->
       <button type="submit"
-              class="ml-3 md:ml-6 flex items-center justify-center w-14 h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30 absolute right-4 md:static md:relative">
+              class="self-end sm:self-auto ml-0 sm:ml-3 md:ml-6 flex items-center justify-center w-14 h-14 rounded-full bg-gold text-white shadow transition hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-gold/30">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8" stroke="currentColor" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" />
@@ -167,7 +166,7 @@
   </div>
 
   <!-- Grid of Property Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-8">
     {% for property in properties %}
       <div
         class="property-card card-3d bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gold cursor-pointer"
@@ -177,13 +176,13 @@
         data-img="{% if property.photos.all %}{{ property.photos.first.image.url }}{% endif %}"
         data-url="{% url 'properties:property_detail' property.pk %}"
       >
-        {% if property.photos.all %}
-          <img src="{{ property.photos.first.image.url }}" alt="{{ property.name }}" class="w-full h-48 object-cover">
-        {% else %}
-          <div class="w-full h-48 flex items-center justify-center bg-[#EEE8DC] text-gold font-bold text-3xl">
-            No Photo
-          </div>
-        {% endif %}
+          {% if property.photos.all %}
+            <img src="{{ property.photos.first.image.url }}" alt="{{ property.name }}" class="w-full h-36 sm:h-48 object-cover">
+          {% else %}
+            <div class="w-full h-36 sm:h-48 flex items-center justify-center bg-[#EEE8DC] text-gold font-bold text-3xl">
+              No Photo
+            </div>
+          {% endif %}
         <div class="p-5 flex-1 flex flex-col">
           <div class="flex items-center justify-between mb-2">
             <h3 class="text-xl font-bold text-gold">{{ property.name }}</h3>
