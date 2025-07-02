@@ -180,7 +180,7 @@ function renderCalendar(){
       if(!startDate || (startDate && endDate)){
         startDate = iso;
         endDate   = null;
-      }else if(new Date(iso) >= new Date(startDate)){
+      }else if(parseISODate(iso) >= parseISODate(startDate)){
         endDate = iso;
       }else{
         startDate = iso;
@@ -192,12 +192,23 @@ function renderCalendar(){
   highlightSelection();
 }
 
+function parseISODate(iso){
+  const [y,m,d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);                // local date without TZ shift
+}
+
+function formatDateDMY(d){
+  const day = String(d.getDate()).padStart(2,'0');
+  const mon = String(d.getMonth()+1).padStart(2,'0');
+  return `${day}/${mon}/${d.getFullYear()}`;
+}
+
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
+  const start = startDate ? parseISODate(startDate) : null;
+  const end   = endDate ? parseISODate(endDate) : null;
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    const d = new Date(btn.dataset.date);
+    const d = parseISODate(btn.dataset.date);
     btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
@@ -213,8 +224,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDateDMY(start) : 'Add dates';
+  checkOutInput.value = end ? formatDateDMY(end) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
