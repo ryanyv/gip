@@ -142,6 +142,11 @@ const monthNamesFull = ['January','February','March','April','May','June','July'
                         'August','September','October','November','December'];
 const weekDays = ['S','M','T','W','T','F','S'];
 
+function pad(n){ return n.toString().padStart(2,'0'); }
+function isoDate(y,m,d){
+  return `${y}-${pad(m+1)}-${pad(d)}`;
+}
+
 function createMonthGrid(dateObj){
   const y = dateObj.getFullYear();
   const m = dateObj.getMonth();
@@ -156,7 +161,7 @@ function createMonthGrid(dateObj){
   for(let b=0;b<startWeekD;b++){ html += '<div></div>'; }
   // days
   for(let d=1; d<=daysInMon; d++){
-    const iso = new Date(y,m,d).toISOString().split('T')[0];
+    const iso = isoDate(y,m,d);
     html += `<button type="button" data-date="${iso}">${d}</button>`;
   }
   html += '</div></div>';
@@ -180,7 +185,7 @@ function renderCalendar(){
       if(!startDate || (startDate && endDate)){
         startDate = iso;
         endDate   = null;
-      }else if(new Date(iso) >= new Date(startDate)){
+      }else if(parseISO(iso) >= parseISO(startDate)){
         endDate = iso;
       }else{
         startDate = iso;
@@ -192,12 +197,21 @@ function renderCalendar(){
   highlightSelection();
 }
 
+function parseISO(str){
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function formatDisplayDate(dt){
+  return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`;
+}
+
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
+  const start = startDate ? parseISO(startDate) : null;
+  const end   = endDate ? parseISO(endDate) : null;
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    const d = new Date(btn.dataset.date);
+    const d = parseISO(btn.dataset.date);
     btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
@@ -213,8 +227,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDisplayDate(start) : 'Add dates';
+  checkOutInput.value = end ? formatDisplayDate(end) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
@@ -292,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wNames.forEach(d=> html += `<div class="text-xs font-medium text-center text-gray-400">${d}</div>`);
     for(let b=0;b<lead;b++) html += '<div></div>';
     for(let d=1;d<=days;d++){
-      const iso = new Date(y,m,d).toISOString().split('T')[0];
+      const iso = isoDate(y,m,d);
       const dis = isBlocked(iso);
       html += `<button data-date="${iso}" ${dis?'disabled':''}
                class="h-14 w-14 flex items-center justify-center rounded text-[#232323] text-base
@@ -329,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('detailSelected').textContent =
-      selStart && selEnd ? `${selStart} – ${selEnd}` : '';
+      selStart && selEnd ? `${formatDisplayDate(parseISO(selStart))} – ${formatDisplayDate(parseISO(selEnd))}` : '';
   }
 
   grid.addEventListener('click', e => {
@@ -342,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selEnd = null;
     } else if (selStart && !selEnd) {
       // choosing an end date or restarting start earlier in time
-      if (new Date(iso) >= new Date(selStart)) {
+      if (parseISO(iso) >= parseISO(selStart)) {
         selEnd = iso;
       } else {
         selStart = iso;
