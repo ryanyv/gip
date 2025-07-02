@@ -156,15 +156,15 @@
 
   <!-- Tabs for Property Types -->
   <div class="flex flex-wrap gap-2 sm:gap-3 mb-6 justify-center px-2 md:px-0">
-    <a href="{% url 'properties:property_list' %}?type=short-term" class="px-4 sm:px-5 py-2 rounded-full text-sm sm:text-base font-semibold transition
+    <a href="{% url 'properties:property_list' %}?type=short-term" class="px-3 sm:px-5 py-2 rounded-full text-xs sm:text-base font-semibold transition
         {% if filter_type == 'short-term' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
       Short-Term Rentals
     </a>
-    <a href="{% url 'properties:property_list' %}?type=long-term" class="px-4 sm:px-5 py-2 rounded-full text-sm sm:text-base font-semibold transition
+    <a href="{% url 'properties:property_list' %}?type=long-term" class="px-3 sm:px-5 py-2 rounded-full text-xs sm:text-base font-semibold transition
         {% if filter_type == 'long-term' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
       Long-Term Rentals
     </a>
-    <a href="{% url 'properties:property_list' %}?type=investment" class="px-4 sm:px-5 py-2 rounded-full text-sm sm:text-base font-semibold transition
+    <a href="{% url 'properties:property_list' %}?type=investment" class="px-3 sm:px-5 py-2 rounded-full text-xs sm:text-base font-semibold transition
         {% if filter_type == 'investment' %}bg-gold text-[#232323] shadow-lg{% else %}bg-[#232323] text-gold border border-gold{% endif %}">
       Investment Projects
     </a>
@@ -188,21 +188,21 @@
             No Photo
           </div>
         {% endif %}
-        <div class="p-4 sm:p-5 flex-1 flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg sm:text-xl font-bold text-gold">{{ property.name }}</h3>
-            <span class="text-xs rounded-full px-2 sm:px-3 py-1 font-semibold
+        <div class="p-3 sm:p-5 flex-1 flex flex-col">
+          <div class="flex items-start justify-between mb-2">
+            <h3 class="text-base sm:text-xl font-bold text-gold">{{ property.name }}</h3>
+            <span class="text-xs rounded-full px-2 py-1 font-semibold whitespace-nowrap
                 {% if property.property_type == 'short-term' %}bg-[#F7E2BB] text-[#B27D12]{% elif property.property_type == 'long-term' %}bg-[#E7F7BB] text-[#4C8619]{% else %}bg-[#D8E2FF] text-[#2B4172]{% endif %}">
               {{ property.get_property_type_display }}
             </span>
           </div>
-          <div class="text-[#232323] font-medium text-sm sm:text-base mb-1 truncate">{{ property.location }}</div>
+          <div class="text-[#232323] font-medium text-xs sm:text-base mb-1 truncate">{{ property.location }}</div>
           <div class="flex items-center text-gray-600 text-xs gap-2 sm:gap-3 mb-3">
             <span>{{ property.bedrooms }} bd</span>
             <span>{{ property.bathrooms }} ba</span>
             <span>{{ property.area }} m²</span>
           </div>
-          <div class="text-base sm:text-lg font-extrabold mb-2 text-[#232323]">
+          <div class="text-sm sm:text-lg font-extrabold mb-2 text-[#232323]">
             {% if property.property_type == 'short-term' %}
               €{{ property.price_per_night|floatformat:0 }}/night
             {% elif property.property_type == 'long-term' %}
@@ -213,8 +213,8 @@
           </div>
           <div class="text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">{{ property.description }}</div>
           <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-auto">
-            <a href="{% url 'properties:property_detail' property.pk %}" class="button-gold w-full text-center flex items-center justify-center font-bold text-sm sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">More Info</a>
-            <a href="{% url 'properties:property_detail' property.pk %}#reserve" class="button-gold w-full text-center flex items-center justify-center font-bold text-sm sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">Reserve</a>
+            <a href="{% url 'properties:property_detail' property.pk %}" class="button-gold w-full text-center flex items-center justify-center font-bold text-xs sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">More Info</a>
+            <a href="{% url 'properties:property_detail' property.pk %}#reserve" class="button-gold w-full text-center flex items-center justify-center font-bold text-xs sm:text-base py-2 sm:py-3 transition rounded-lg shadow hover:scale-105">Reserve</a>
           </div>
         </div>
       </div>
