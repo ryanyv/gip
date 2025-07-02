@@ -193,11 +193,12 @@ function renderCalendar(){
 }
 
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
-
+  const parseLocal = iso => new Date(iso + 'T00:00:00');
+  const start = startDate ? parseLocal(startDate) : null;
+  const end   = endDate ? parseLocal(endDate) : null;
+  
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    const d = new Date(btn.dataset.date);
+    const d = parseLocal(btn.dataset.date);
     btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
@@ -213,8 +214,9 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  const opts = { day:'numeric', month:'long', year:'numeric' };
+  checkInInput.value  = start ? start.toLocaleDateString('en-GB', opts) : 'Add dates';
+  checkOutInput.value = end ? end.toLocaleDateString('en-GB', opts) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
