@@ -156,7 +156,7 @@ function createMonthGrid(dateObj){
   for(let b=0;b<startWeekD;b++){ html += '<div></div>'; }
   // days
   for(let d=1; d<=daysInMon; d++){
-    const iso = new Date(y,m,d).toISOString().split('T')[0];
+    const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     html += `<button type="button" data-date="${iso}">${d}</button>`;
   }
   html += '</div></div>';
@@ -192,12 +192,21 @@ function renderCalendar(){
   highlightSelection();
 }
 
+function isoToLocalDate(iso){
+  const parts = iso.split('-').map(Number);
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+
+function formatDateDisplay(d){
+  return d.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+}
+
 function highlightSelection(){
-  const start = startDate ? new Date(startDate) : null;
-  const end   = endDate ? new Date(endDate) : null;
+  const start = startDate ? isoToLocalDate(startDate) : null;
+  const end   = endDate ? isoToLocalDate(endDate) : null;
 
   calGrid.querySelectorAll('button[data-date]').forEach(btn=>{
-    const d = new Date(btn.dataset.date);
+    const d = isoToLocalDate(btn.dataset.date);
     btn.classList.remove('range-start','range-end','in-range','no-after');
 
     if(start && btn.dataset.date===startDate){
@@ -213,8 +222,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDateDisplay(start) : 'Add dates';
+  checkOutInput.value = end ? formatDateDisplay(end) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
@@ -292,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     wNames.forEach(d=> html += `<div class="text-xs font-medium text-center text-gray-400">${d}</div>`);
     for(let b=0;b<lead;b++) html += '<div></div>';
     for(let d=1;d<=days;d++){
-      const iso = new Date(y,m,d).toISOString().split('T')[0];
+      const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const dis = isBlocked(iso);
       html += `<button data-date="${iso}" ${dis?'disabled':''}
                class="h-14 w-14 flex items-center justify-center rounded text-[#232323] text-base
@@ -342,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selEnd = null;
     } else if (selStart && !selEnd) {
       // choosing an end date or restarting start earlier in time
-      if (new Date(iso) >= new Date(selStart)) {
+      if (isoToLocalDate(iso) >= isoToLocalDate(selStart)) {
         selEnd = iso;
       } else {
         selStart = iso;
