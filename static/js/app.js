@@ -142,6 +142,12 @@ const monthNamesFull = ['January','February','March','April','May','June','July'
                         'August','September','October','November','December'];
 const weekDays = ['S','M','T','W','T','F','S'];
 
+function formatDate(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${parseInt(d,10)}/${parseInt(m,10)}/${y}`;
+}
+
 function createMonthGrid(dateObj){
   const y = dateObj.getFullYear();
   const m = dateObj.getMonth();
@@ -213,8 +219,8 @@ function highlightSelection(){
     }
   });
 
-  checkInInput.value  = start ? start.toLocaleDateString() : 'Add dates';
-  checkOutInput.value = end ? end.toLocaleDateString() : 'Add dates';
+  checkInInput.value  = start ? formatDate(startDate) : 'Add dates';
+  checkOutInput.value = end ? formatDate(endDate) : 'Add dates';
   calDropdown.dataset.start = startDate || '';
   calDropdown.dataset.end   = endDate || '';
 
