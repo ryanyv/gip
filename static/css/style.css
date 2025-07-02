@@ -118,8 +118,8 @@ a:hover, .hover\:text-gold:hover {
   border-radius:1.5rem;
 }
 #calendarGrid button{
-  width:56px;
-  height:56px;
+  width:56px; /* Default for md screens and up */
+  height:56px; /* Default for md screens and up */
   display:flex;
   align-items:center;
   justify-content:center;
@@ -160,6 +160,38 @@ a:hover, .hover\:text-gold:hover {
   background:#F7E2BB;
   color:#232323;
   border-radius:0;
+}
+
+/* Make calendar buttons smaller on mobile */
+@media (max-width: 767px) { /* Below Tailwind's md breakpoint */
+  #calendarGrid {
+    justify-content: space-around; /* Distribute space for fewer items per row */
+  }
+  #calendarGrid button {
+    width: 40px;
+    height: 40px;
+    font-size: 0.85rem;
+  }
+
+  /* Detail page calendar adjustments for mobile */
+  #detailCalendarGrid {
+    justify-content: space-around;
+  }
+  #detailCalendarGrid button {
+    width: 40px; /* Match property list calendar */
+    height: 40px; /* Match property list calendar */
+    font-size: 0.85rem; /* Match property list calendar */
+  }
+  #detailCalendarGrid button.range-start::before,
+  #detailCalendarGrid button.range-end::before{
+    width:28px; /* Adjust size of the circle marker */
+    height:28px; /* Adjust size of the circle marker */
+  }
+  #detailCalendarGrid button.range-start::after,
+  #detailCalendarGrid button.range-end::after{
+    top:7px; /* Adjust position of range extenders */
+    bottom:7px; /* Adjust position of range extenders */
+  }
 }
 
 /* Detail page availability calendar */
