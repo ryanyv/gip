@@ -18,3 +18,10 @@ def contact(request):
 
 def privacy(request):
     return render(request, "core/privacy.html")
+
+
+def contact(request):
+    return render(request, "core/contact.html")
+
+def privacy(request):
+    return render(request, "core/privacy.html")
