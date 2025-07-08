@@ -2,32 +2,20 @@
 {% block content %}
 <div class="max-w-5xl mx-auto mt-10 p-6 md:p-12 bg-white rounded-2xl shadow-2xl flex flex-col gap-8">
 
-  <!-- Photo Gallery -->
-  <div class="w-full">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {% for photo in property.photos.all %}
-        <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:property.name }}" class="rounded-xl w-full h-64 object-cover shadow" loading="lazy">
-      {% empty %}
-        <div class="flex items-center justify-center w-full h-64 text-gray-300 bg-gray-100 rounded-xl">
-          <span>No photos available.</span>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-
-  <!-- Video Gallery -->
-  <div class="w-full mt-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {% for video in property.videos.all %}
-        <video controls class="rounded-xl w-full h-64 object-cover shadow">
+  <!-- lightGallery Container -->
+  <div id="lightgallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {% for photo in property.photos.all %}
+      <a href="{{ photo.image.url }}" class="block rounded-xl overflow-hidden shadow-lg">
+        <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:property.name }}" class="w-full h-48 object-cover">
+      </a>
+    {% endfor %}
+    {% for video in property.videos.all %}
+      <a href="{{ video.video.url }}" class="block rounded-xl overflow-hidden shadow-lg" data-video='{"source": [{"src":"{{ video.video.url }}", "type":"video/mp4"}]}'>
+        <video class="w-full h-48 object-cover">
           <source src="{{ video.video.url }}" type="video/mp4">
         </video>
-      {% empty %}
-        <div class="flex items-center justify-center w-full h-64 text-gray-300 bg-gray-100 rounded-xl">
-          <span>No videos available.</span>
-        </div>
-      {% endfor %}
-    </div>
+      </a>
+    {% endfor %}
   </div>
 
   <!-- Property Main Info -->
@@ -194,6 +182,11 @@ document.addEventListener('DOMContentLoaded', function() {
     inBox.value = s ? s.dataset.date : '';
     outBox.value = e ? e.dataset.date : '';
   });
+});
+
+lightGallery(document.getElementById('lightgallery'), {
+  plugins: [lgVideo],
+  speed: 500,
 });
 </script>
 {% endblock %}
